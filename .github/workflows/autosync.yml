@@ -1,4 +1,4 @@
-ame: Auto-sync Packages
+name: Auto-sync Packages
 
 on:
   schedule:
