@@ -3,15 +3,18 @@ on:
   schedule:
     - cron: "0 3 * * *"
   workflow_dispatch:
+permissions: write-all
 jobs:
   sync:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab94eb53bb8095824c94d18f3f
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-      - uses: actions/setup-python@0b93645e9fea7318ecaed2b3585590225d933a9b
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - name: Auto-sync targets
@@ -80,8 +83,11 @@ jobs:
               return hashlib.sha256(base64.b64decode(remote["content"])).hexdigest()
 
           def local_sha(path):
-              with open(path, "rb") as f:
-                  return hashlib.sha256(f.read()).hexdigest()
+              try:
+                  with open(path, "rb") as f:
+                      return hashlib.sha256(f.read()).hexdigest()
+              except FileNotFoundError:
+                  return None
 
           subprocess.run(["git", "remote", "set-url", "origin", GIT_REMOTE_URL], check=True)
 
@@ -94,6 +100,8 @@ jobs:
                        if f["path"].startswith(cfg["source_path"])]
               for file in files:
                   rel_path = file["path"][len(cfg["source_path"]) + 1:]
+                  if not rel_path:
+                      continue
                   target_path = os.path.join(cfg["target"], rel_path)
                   remote_files.add(target_path)
                   try:
@@ -102,7 +110,7 @@ jobs:
                           download_file(file["url"], target_path)
                   except FileNotFoundError:
                       has_changes = True
-                      download_file(file["url"], target_path)
+                          download_file(file["url"], target_path)
 
           for old_file in subprocess.check_output(
                   ["git", "ls-files"], text=True
