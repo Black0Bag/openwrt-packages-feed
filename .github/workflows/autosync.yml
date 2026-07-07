@@ -8,13 +8,11 @@ jobs:
   sync:
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - name: Auto-sync targets
@@ -24,6 +22,7 @@ jobs:
           cat <<'SCRIPT' > sync.py
           import os, json, base64, subprocess, hashlib
           from urllib.request import Request, urlopen
+          from urllib.error import HTTPError
 
           SOURCES = [
               {
@@ -42,89 +41,94 @@ jobs:
 
           GIT_NAME = "Auto Sync Bot"
           GIT_EMAIL = "autosync@opencode.ai"
-          GIT_REMOTE_URL = (
-              "https://x-access-token:"
-              + os.environ["GITHUB_TOKEN"]
-              + "@github.com/"
-              + os.environ["GITHUB_REPOSITORY"]
-              + ".git"
-          )
+          REPO = os.environ["GITHUB_REPOSITORY"]
 
           subprocess.run(["git", "config", "user.name", GIT_NAME], check=True)
           subprocess.run(["git", "config", "user.email", GIT_EMAIL], check=True)
 
-          def get_default_branch(repo):
-              url = f"https://api.github.com/repos/{repo}/branches"
+          def api_get(url):
               req = Request(url)
-              req.add_header("Authorization", f"Bearer {os.environ['GITHUB_TOKEN']}")
-              req.add_header("Accept", "application/vnd.github.v3+json")
-              data = json.load(urlopen(req))
-              return data[0]["name"]
-
-          def fetch_github_tree(repo):
-              branch = get_default_branch(repo)
-              url = f"https://api.github.com/repos/{repo}/git/trees/{branch}?recursive=1"
-              req = Request(url)
-              req.add_header("Authorization", f"Bearer {os.environ['GITHUB_TOKEN']}")
+              req.add_header("Authorization", "Bearer " + os.environ["GITHUB_TOKEN"])
+              req.add_header("Accept", "application/vnd.github+json")
               return json.load(urlopen(req))
 
-          def download_file(blob_url, target_path):
-              req = Request(blob_url)
-              req.add_header("Authorization", f"Bearer {os.environ['GITHUB_TOKEN']}")
-              blob = json.load(urlopen(req))
+          def get_default_branch(repo):
+              data = api_get(f"https://api.github.com/repos/{repo}/branches")
+              return data[0]["name"]
+
+          def fetch_tree(repo):
+              branch = get_default_branch(repo)
+              return api_get(
+                  f"https://api.github.com/repos/{repo}/git/trees/{branch}?recursive=1"
+              )
+
+          def get_blob(blob_url):
+              return api_get(blob_url)
+
+          def download(blob_url, target_path):
+              blob = get_blob(blob_url)
               os.makedirs(os.path.dirname(target_path), exist_ok=True)
               with open(target_path, "wb") as f:
                   f.write(base64.b64decode(blob["content"]))
 
-          def remote_sha(blob_url):
-              req = Request(blob_url)
-              req.add_header("Authorization", f"Bearer {os.environ['GITHUB_TOKEN']}")
-              remote = json.load(urlopen(req))
-              return hashlib.sha256(base64.b64decode(remote["content"])).hexdigest()
-
-          def local_sha(path):
+          def has_changed(blob_url, local_path):
+              remote = get_blob(blob_url)
+              remote_hash = hashlib.sha256(
+                  base64.b64decode(remote["content"])
+              ).hexdigest()
               try:
-                  with open(path, "rb") as f:
-                      return hashlib.sha256(f.read()).hexdigest()
+                  with open(local_path, "rb") as f:
+                      local_hash = hashlib.sha256(f.read()).hexdigest()
               except FileNotFoundError:
-                  return None
+                  return True, remote_hash
+              return local_hash != remote_hash, remote_hash
 
-          subprocess.run(["git", "remote", "set-url", "origin", GIT_REMOTE_URL], check=True)
+          subprocess.run([
+              "git", "remote", "set-url", "origin",
+              f"https://x-access-token:{os.environ['GITHUB_TOKEN']}@github.com/{REPO}.git"
+          ], check=True)
 
           remote_files = set()
-          has_changes = False
+          changed = False
 
           for cfg in SOURCES:
-              tree = fetch_github_tree(cfg["source_repo"])
-              files = [f for f in tree["tree"]
-                       if f["path"].startswith(cfg["source_path"])]
-              for file in files:
-                  rel_path = file["path"][len(cfg["source_path"]) + 1:]
-                  if not rel_path:
+              tree = fetch_tree(cfg["source_repo"])
+              prefix = cfg["source_path"]
+              for entry in tree["tree"]:
+                  if not entry["path"].startswith(prefix):
                       continue
-                  target_path = os.path.join(cfg["target"], rel_path)
-                  remote_files.add(target_path)
+                  rel = entry["path"][len(prefix) + 1:]
+                  if not rel:
+                      continue
+                  target = os.path.join(cfg["target"], rel)
+                  remote_files.add(target)
                   try:
-                      if local_sha(target_path) != remote_sha(file["url"]):
-                          has_changes = True
-                          download_file(file["url"], target_path)
-                  except FileNotFoundError:
-                      has_changes = True
-                          download_file(file["url"], target_path)
+                      is_changed, _ = has_changed(entry["url"], target)
+                      if is_changed:
+                          download(entry["url"], target)
+                          changed = True
+                  except HTTPError as e:
+                      print(f"ERROR downloading {entry['path']}: {e.code} {e.reason}")
+                      raise
 
-          for old_file in subprocess.check_output(
+          for old in subprocess.check_output(
                   ["git", "ls-files"], text=True
               ).splitlines():
-              if old_file not in remote_files and not old_file.endswith("/"):
-                  os.remove(old_file)
-                  has_changes = True
+              if old not in remote_files and not old.endswith("/"):
+                  os.remove(old)
+                  changed = True
 
-          if has_changes:
+          if changed:
               subprocess.run(["git", "add", "-A"], check=True)
-              subprocess.run(
-                  ["git", "commit", "-m", "auto-sync: 3 AM UTC"], check=True
-              )
-              subprocess.run(["git", "push", "origin", "HEAD:master"], check=True)
+              subprocess.run([
+                  "git", "diff", "--cached", "--quiet"
+              ])
+              subprocess.run([
+                  "git", "commit", "-m", "auto-sync: 3 AM UTC"
+              ], check=True)
+              subprocess.run([
+                  "git", "push", "origin", "HEAD:master"
+              ], check=True)
               print("sync completed")
           else:
               print("No updates")
