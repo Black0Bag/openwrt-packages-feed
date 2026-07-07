@@ -1,4 +1,4 @@
-name: Daily Auto-sync @ 3 AM UTC
+name: Daily Auto-sync
 on:
   schedule:
     - cron: "0 3 * * *"
@@ -8,17 +8,20 @@ jobs:
   sync:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@main
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ACCESS_TOKEN }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - name: Auto-sync targets
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
+          git config --global user.name "Auto Sync Bot"
+          git config --global user.email "autosync@opencode.ai"
+
           cat <<'SCRIPT' > sync.py
           import os, json, base64, subprocess, hashlib
           from urllib.request import Request, urlopen
@@ -26,66 +29,53 @@ jobs:
 
           SOURCES = [
               {
-                  "name": "luci-app-cloud-clipboard",
                   "source_repo": "Jonnyan404/cloud-clipboard-go",
                   "source_path": "openwrt/luci-app-cloud-clipboard",
                   "target": "luci-app-cloud-clipboard/"
               },
               {
-                  "name": "luci-app-passwall",
                   "source_repo": "Openwrt-Passwall/openwrt-passwall",
                   "source_path": "luci-app-passwall",
                   "target": "luci-app-passwall/"
               }
           ]
 
-          GIT_NAME = "Auto Sync Bot"
-          GIT_EMAIL = "autosync@opencode.ai"
-          REPO = os.environ["GITHUB_REPOSITORY"]
-
-          subprocess.run(["git", "config", "user.name", GIT_NAME], check=True)
-          subprocess.run(["git", "config", "user.email", GIT_EMAIL], check=True)
-
-          def api_get(url):
+          def api(url):
               req = Request(url)
               req.add_header("Authorization", "Bearer " + os.environ["GITHUB_TOKEN"])
               req.add_header("Accept", "application/vnd.github+json")
               return json.load(urlopen(req))
 
-          def get_default_branch(repo):
-              data = api_get(f"https://api.github.com/repos/{repo}/branches")
-              return data[0]["name"]
+          def default_branch(repo):
+              return api(f"https://api.github.com/repos/{repo}/branches")[0]["name"]
 
           def fetch_tree(repo):
-              branch = get_default_branch(repo)
-              return api_get(
-                  f"https://api.github.com/repos/{repo}/git/trees/{branch}?recursive=1"
-              )
+              branch = default_branch(repo)
+              return api(f"https://api.github.com/repos/{repo}/git/trees/{branch}?recursive=1")
 
-          def get_blob(blob_url):
-              return api_get(blob_url)
-
-          def download(blob_url, target_path):
-              blob = get_blob(blob_url)
-              os.makedirs(os.path.dirname(target_path), exist_ok=True)
-              with open(target_path, "wb") as f:
+          def download(blob_url, dest):
+              blob = api(blob_url)
+              os.makedirs(os.path.dirname(dest), exist_ok=True)
+              with open(dest, "wb") as f:
                   f.write(base64.b64decode(blob["content"]))
 
-          def has_changed(blob_url, local_path):
-              remote = get_blob(blob_url)
-              remote_hash = hashlib.sha256(
-                  base64.b64decode(remote["content"])
-              ).hexdigest()
+          def sha256(data_bytes):
+              return hashlib.sha256(data_bytes).hexdigest()
+
+          def needs_update(blob_url, local):
+              remote = api(blob_url)
+              remote_hash = sha256(base64.b64decode(remote["content"]))
               try:
-                  with open(local_path, "rb") as f:
-                      local_hash = hashlib.sha256(f.read()).hexdigest()
+                  with open(local, "rb") as f:
+                      local_hash = sha256(f.read())
+                  return remote_hash != local_hash, remote_hash
               except FileNotFoundError:
                   return True, remote_hash
-              return local_hash != remote_hash, remote_hash
 
+          repo = os.environ["GITHUB_REPOSITORY"]
           subprocess.run([
               "git", "remote", "set-url", "origin",
-              f"https://x-access-token:{os.environ['GITHUB_TOKEN']}@github.com/{REPO}.git"
+              f"https://x-access-token:{os.environ['GITHUB_TOKEN']}@github.com/{repo}.git"
           ], check=True)
 
           remote_files = set()
@@ -100,36 +90,29 @@ jobs:
                   rel = entry["path"][len(prefix) + 1:]
                   if not rel:
                       continue
-                  target = os.path.join(cfg["target"], rel)
-                  remote_files.add(target)
+                  dest = os.path.join(cfg["target"], rel)
+                  remote_files.add(dest)
                   try:
-                      is_changed, _ = has_changed(entry["url"], target)
-                      if is_changed:
-                          download(entry["url"], target)
+                      if needs_update(entry["url"], dest)[0]:
+                          download(entry["url"], dest)
                           changed = True
                   except HTTPError as e:
-                      print(f"ERROR downloading {entry['path']}: {e.code} {e.reason}")
+                      print(f"ERROR: {entry['path']} -> {e.code} {e.reason}")
                       raise
 
-          for old in subprocess.check_output(
-                  ["git", "ls-files"], text=True
-              ).splitlines():
+          for old in subprocess.check_output(["git", "ls-files"], text=True).splitlines():
               if old not in remote_files and not old.endswith("/"):
                   os.remove(old)
                   changed = True
 
           if changed:
               subprocess.run(["git", "add", "-A"], check=True)
-              subprocess.run([
-                  "git", "diff", "--cached", "--quiet"
-              ])
-              subprocess.run([
-                  "git", "commit", "-m", "auto-sync: 3 AM UTC"
-              ], check=True)
-              subprocess.run([
-                  "git", "push", "origin", "HEAD:master"
-              ], check=True)
-              print("sync completed")
+              if subprocess.run(["git", "diff", "--cached", "--quiet"]).returncode == 1:
+                  subprocess.run(["git", "commit", "-m", "auto-sync: 3 AM UTC"], check=True)
+                  subprocess.run(["git", "push", "origin", "HEAD:master"], check=True)
+                  print("sync completed")
+              else:
+                  print("stage had no real changes")
           else:
               print("No updates")
           SCRIPT
