@@ -1,4 +1,4 @@
-name: Auto-sync Packages
+name: Daily Auto-sync @ 3 AM UTC
 
 on:
   schedule:
@@ -12,56 +12,88 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
       - uses: actions/setup-python@v5
-      - name: Run sync script
-        run: |-
-          cat <<"PYTHON_SCRIPT" > sync.py
-          import os, json, urllib.request, base64, hashlib, subprocess
-          
+        with:
+          python-version: "3.11"
+
+      - name: Auto-sync targets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cat <<'SCRIPT' > sync.py
+          import os, json, base64, subprocess, hashlib
+          from urllib.request import Request, urlopen
+
           SOURCES = [
               {
-                  "name": "cloud-clipboard",
+                  "name": "luci-app-cloud-clipboard",
                   "source_repo": "Jonnyan404/cloud-clipboard-go",
                   "source_path": "openwrt/luci-app-cloud-clipboard",
-                  "target_path": "luci-app-cloud-clipboard"
+                  "target": "luci-app-cloud-clipboard/"
+              },
+              {
+                  "name": "luci-app-passwall",
+                  "source_repo": "Openwrt-Passwall/openwrt-passwall",
+                  "source_path": "luci-app-passwall",
+                  "target": "luci-app-passwall/"
               }
           ]
-          
-          def get_token():
-              return os.environ["GITHUB_TOKEN"]
-          
-          def github_api(url):
-              req = urllib.request.Request(url)
-              req.add_header("Authorization", f"Bearer {get_token()}")
-              req.add_header("User-Agent", "openwrt-feed-auto-sync")
-              req.add_header("Accept", "application/vnd.github+json")
-              return json.loads(urllib.request.urlopen(req, timeout=30).read())
-          
-          def download_file(url, dest):
-              os.makedirs(os.path.dirname(dest), exist_ok=True)
-              content = github_api(url)
-              data = base64.b64decode(content["content"])
-              with open(dest, "wb") as f:
-                  f.write(data)
-          
-          def main():
-              for source in SOURCES:
-                  tree = github_api(f"https://api.github.com/repos/{source["source_repo"]}/git/trees/main?recursive=1")
-                  files = [f for f in tree["tree"] if f["path"].startswith(source["source_path"] + "/") and f["type"] == "blob"]
-                  
+
+          def fetch_github_tree(repo):
+              url = f'https://api.github.com/repos/{repo}/git/trees/main?recursive=1'
+              req = Request(url)
+              req.add_header('Authorization', f'Bearer {os.environ["GITHUB_TOKEN"]}')
+              return json.load(urlopen(req))
+
+          def download_file(blob_url, target_path):
+              req = Request(blob_url)
+              req.add_header('Authorization', f'Bearer {os.environ["GITHUB_TOKEN"]}')
+              blob = json.load(urlopen(req))
+              with open(target_path, 'wb') as f:
+                  f.write(base64.b64decode(blob["content"]))
+
+          def sync_repo():
+              GIT_NAME = "Auto Sync Bot"
+              GIT_EMAIL = "autosync@opencode.ai"
+
+              subprocess.run(["git", "config", "user.name", GIT_NAME], check=True)
+              subprocess.run(["git", "config", "user.email", GIT_EMAIL], check=True)
+
+              for cfg in SOURCES:
+                  tree = fetch_github_tree(cfg["source_repo"])
+                  files = [f for f in tree["tree"] if f["path"].startswith(cfg["source_path"])]
                   for file in files:
-                      src_path = file["path"][len(source["source_path"]) + 1:]
-                      target_file = os.path.join(source["target_path"], src_path)
-                      download_file(file["url"], target_file)
-              
-              subprocess.run(["git", "config", "user.name", "Auto Sync Bot"], check=True)
-              subprocess.run(["git", "config", "user.email", "bot@opencode.ai"], check=True)
+                      rel_path = file["path"][len(cfg["source_path"]) + 1:]
+                      target_path = os.path.join(cfg["target"], rel_path)
+                      os.makedirs(os.path.dirname(target_path), exist_ok=True)
+
+                      try:
+                          with open(target_path, "rb") as existing:
+                              local_sha = hashlib.sha256(existing.read()).hexdigest()
+                          req = Request(file["url"])
+                          req.add_header('Authorization', f'Bearer {os.environ["GITHUB_TOKEN"]}')
+                          remote = json.load(urlopen(req))
+                          remote_sha = hashlib.sha256(base64.b64decode(remote["content"])).hexdigest()
+                          update = local_sha != remote_sha
+                      except FileNotFoundError:
+                          update = True
+
+                      if update:
+                          print(f'📂 Updating: {target_path}')
+                          download_file(file["url"], target_path)
+
               subprocess.run(["git", "add", "."], check=True)
-              subprocess.run(["git", "commit", "-m", "auto-sync: 3 AM UTC update"], check=True)
-              subprocess.run(["git", "push"], check=True)
-          
+              if subprocess.run(["git", "diff", "--quiet", "HEAD"]).returncode == 1:
+                  subprocess.run(["git", "commit", "-m", "auto-sync: 3 AM UTC"], check=True)
+                  subprocess.run(["git", "push"], check=True)
+                  print("✅ sync completed")
+              else:
+                  print("🔄 No updates")
+
           if __name__ == "__main__":
-              main()
-          PYTHON_SCRIPT
-          
+              sync_repo()
+          SCRIPT
+
           python sync.py
