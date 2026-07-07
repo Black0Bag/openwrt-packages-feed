@@ -1,0 +1,67 @@
+ame: Auto-sync Packages
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+      - name: Run sync script
+        run: |-
+          cat <<"PYTHON_SCRIPT" > sync.py
+          import os, json, urllib.request, base64, hashlib, subprocess
+          
+          SOURCES = [
+              {
+                  "name": "cloud-clipboard",
+                  "source_repo": "Jonnyan404/cloud-clipboard-go",
+                  "source_path": "openwrt/luci-app-cloud-clipboard",
+                  "target_path": "luci-app-cloud-clipboard"
+              }
+          ]
+          
+          def get_token():
+              return os.environ["GITHUB_TOKEN"]
+          
+          def github_api(url):
+              req = urllib.request.Request(url)
+              req.add_header("Authorization", f"Bearer {get_token()}")
+              req.add_header("User-Agent", "openwrt-feed-auto-sync")
+              req.add_header("Accept", "application/vnd.github+json")
+              return json.loads(urllib.request.urlopen(req, timeout=30).read())
+          
+          def download_file(url, dest):
+              os.makedirs(os.path.dirname(dest), exist_ok=True)
+              content = github_api(url)
+              data = base64.b64decode(content["content"])
+              with open(dest, "wb") as f:
+                  f.write(data)
+          
+          def main():
+              for source in SOURCES:
+                  tree = github_api(f"https://api.github.com/repos/{source["source_repo"]}/git/trees/main?recursive=1")
+                  files = [f for f in tree["tree"] if f["path"].startswith(source["source_path"] + "/") and f["type"] == "blob"]
+                  
+                  for file in files:
+                      src_path = file["path"][len(source["source_path"]) + 1:]
+                      target_file = os.path.join(source["target_path"], src_path)
+                      download_file(file["url"], target_file)
+              
+              subprocess.run(["git", "config", "user.name", "Auto Sync Bot"], check=True)
+              subprocess.run(["git", "config", "user.email", "bot@opencode.ai"], check=True)
+              subprocess.run(["git", "add", "."], check=True)
+              subprocess.run(["git", "commit", "-m", "auto-sync: 3 AM UTC update"], check=True)
+              subprocess.run(["git", "push"], check=True)
+          
+          if __name__ == "__main__":
+              main()
+          PYTHON_SCRIPT
+          
+          python sync.py
