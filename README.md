@@ -68,36 +68,6 @@ make -j$(nproc)
   上传 sync.log artifact (保留 7 天)
 ```
 
-## 仓库结构
-
-```
-openwrt-packages-feed/
-├── .github/workflows/
-│   └── autosync.yml              # GitHub Actions workflow
-├── luci-app-cloud-clipboard/      # 云剪贴板 LuCI 包
-│   ├── Makefile
-│   ├── luasrc/
-│   └── root/
-├── luci-app-passwall/             # PassWall LuCI 包
-│   ├── Makefile
-│   ├── htdocs/
-│   ├── luasrc/
-│   ├── po/                        # 翻译文件 (zh-cn)
-│   └── root/
-├── luci-theme-aurora/             # Aurora 主题
-│   ├── Makefile
-│   ├── htdocs/
-│   ├── root/
-│   └── ucode/
-├── luci-app-aurora-config/        # Aurora 主题配置
-│   ├── Makefile
-│   ├── htdocs/
-│   ├── po/
-│   ├── root/
-│   └── scripts/
-└── sync.py                        # 自动同步脚本
-```
-
 ## 添加新的同步源
 
 编辑 [`sync.py`](./sync.py) 中的 `SOURCES` 列表，添加新的条目：
