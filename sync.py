@@ -29,6 +29,24 @@ SOURCES = [
         "source_path": "luci-app-passwall",
         "target": "luci-app-passwall/",
     },
+    {
+        "source_repo": "eamonxg/luci-theme-aurora",
+        "source_path": "",
+        "target": "luci-theme-aurora/",
+        "exclude": [
+            ".claude", ".dev", ".vscode", ".github", ".gitignore",
+            "CLAUDE.md", "README.md", "README_zh.md",
+        ],
+    },
+    {
+        "source_repo": "eamonxg/luci-app-aurora-config",
+        "source_path": "",
+        "target": "luci-app-aurora-config/",
+        "exclude": [
+            ".github", ".gitignore", "README.md", "README_zh.md",
+            "docs", "tests", "package.json",
+        ],
+    },
 ]
 
 API_TIMEOUT = 30
@@ -102,26 +120,45 @@ def get_default_branch(repo: str) -> str:
     return branch
 
 
-def fetch_tree(repo: str, branch: str, source_path: str) -> list:
+def fetch_tree(repo: str, branch: str, source_path: str, exclude: list = None) -> list:
     """
     获取仓库递归 tree，返回 source_path 下的所有 blob 条目。
-    处理 truncated 的情况。
+    source_path 为空时同步整个仓库。
+    处理 truncated 的情况，支持 exclude 过滤。
     """
+    exclude = exclude or []
     tree_data = api_get(f"{API_BASE}/repos/{repo}/git/trees/{branch}?recursive=1")
 
     if tree_data.get("truncated"):
         log(f"  ⚠️ tree 被截断，回退到 contents API 逐目录获取: {source_path}")
-        return _fetch_via_contents(repo, branch, source_path)
+        return _fetch_via_contents(repo, branch, source_path, exclude)
 
     entries = tree_data.get("tree", [])
-    prefix = source_path.rstrip("/") + "/"
-    result = [e for e in entries if e["type"] == "blob" and e["path"].startswith(prefix)]
-    log(f"  {source_path}: {len(result)} 个文件")
+
+    if source_path:
+        prefix = source_path.rstrip("/") + "/"
+        result = [e for e in entries if e["type"] == "blob" and e["path"].startswith(prefix)]
+    else:
+        result = [e for e in entries if e["type"] == "blob"]
+
+    if exclude:
+        result = [e for e in result if not _is_excluded(e["path"], source_path, exclude)]
+
+    log(f"  {source_path or '(root)'}: {len(result)} 个文件"
+        + (f" (排除 {len(exclude)} 项)" if exclude else ""))
     return result
 
 
-def _fetch_via_contents(repo: str, branch: str, path: str) -> list:
+def _is_excluded(path: str, source_path: str, exclude: list) -> bool:
+    """检查文件是否在排除列表中（按顶层目录/文件名匹配）。"""
+    rel = path[len(source_path):].lstrip("/") if source_path else path
+    top = rel.split("/")[0]
+    return top in exclude
+
+
+def _fetch_via_contents(repo: str, branch: str, path: str, exclude: list = None) -> list:
     """tree 截断时的回退方案，递归遍历 contents API。"""
+    exclude = exclude or []
     entries = []
 
     def _recurse(sub_path: str):
@@ -130,16 +167,27 @@ def _fetch_via_contents(repo: str, branch: str, path: str) -> list:
             data = [data]
         for item in data:
             if item["type"] == "file":
+                top = item["path"].split("/")[-2] if "/" in item["path"] else item["path"]
+                rel_top = item["path"]
+                if path:
+                    rel_top = item["path"][len(path):].lstrip("/")
+                top = rel_top.split("/")[0] if rel_top else item["path"]
+                if top in exclude:
+                    continue
                 entries.append({
                     "path": item["path"],
                     "sha": item["sha"],
                     "size": item.get("size", 0),
                 })
             elif item["type"] == "dir":
+                top = item["path"][len(path):].lstrip("/") if path else item["path"]
+                top = top.split("/")[0] if top else item["path"]
+                if top in exclude:
+                    continue
                 _recurse(item["path"])
 
     _recurse(path)
-    log(f"  {path}: {len(entries)} 个文件 (via contents API)")
+    log(f"  {path or '(root)'}: {len(entries)} 个文件 (via contents API)")
     return entries
 
 
@@ -187,14 +235,15 @@ def sync_target(src: dict, local_shas: dict) -> tuple:
     repo = src["source_repo"]
     source_path = src["source_path"]
     target = src["target"]
+    exclude = src.get("exclude", [])
 
-    log(f"━━━ 同步: {repo}/{source_path} → {target} ━━━")
+    log(f"━━━ 同步: {repo}/{source_path or '(root)'} → {target} ━━━")
 
     # 1. 获取默认分支
     branch = get_default_branch(repo)
 
     # 2. 获取源文件树
-    remote_entries = fetch_tree(repo, branch, source_path)
+    remote_entries = fetch_tree(repo, branch, source_path, exclude)
     if not remote_entries:
         log(f"  ⚠️ 未找到源文件，跳过")
         return 0, 0, 0, 0
