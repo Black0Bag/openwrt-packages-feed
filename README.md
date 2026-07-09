@@ -10,6 +10,8 @@
 |---|---|---|---|
 | **luci-app-cloud-clipboard** | [Jonnyan404/cloud-clipboard-go](https://github.com/Jonnyan404/cloud-clipboard-go) | `openwrt/luci-app-cloud-clipboard` | 云剪贴板 LuCI 界面 |
 | **luci-app-passwall** | [Openwrt-Passwall/openwrt-passwall](https://github.com/Openwrt-Passwall/openwrt-passwall) | `luci-app-passwall` | PassWall 代理管理界面 |
+| **luci-theme-aurora** | [eamonxg/luci-theme-aurora](https://github.com/eamonxg/luci-theme-aurora) | `(仓库根目录)` | Aurora 主题 (Vite + Tailwind CSS) |
+| **luci-app-aurora-config** | [eamonxg/luci-app-aurora-config](https://github.com/eamonxg/luci-app-aurora-config) | `(仓库根目录)` | Aurora 主题配置应用 |
 
 ## 使用方法
 
@@ -71,18 +73,29 @@ make -j$(nproc)
 ```
 openwrt-packages-feed/
 ├── .github/workflows/
-│   └── autosync.yml          # GitHub Actions workflow
-├── luci-app-cloud-clipboard/  # 云剪贴板 LuCI 包
+│   └── autosync.yml              # GitHub Actions workflow
+├── luci-app-cloud-clipboard/      # 云剪贴板 LuCI 包
 │   ├── Makefile
 │   ├── luasrc/
 │   └── root/
-├── luci-app-passwall/         # PassWall LuCI 包
+├── luci-app-passwall/             # PassWall LuCI 包
 │   ├── Makefile
 │   ├── htdocs/
 │   ├── luasrc/
-│   ├── po/                    # 翻译文件 (zh-cn)
+│   ├── po/                        # 翻译文件 (zh-cn)
 │   └── root/
-└── sync.py                    # 自动同步脚本
+├── luci-theme-aurora/             # Aurora 主题
+│   ├── Makefile
+│   ├── htdocs/
+│   ├── root/
+│   └── ucode/
+├── luci-app-aurora-config/        # Aurora 主题配置
+│   ├── Makefile
+│   ├── htdocs/
+│   ├── po/
+│   ├── root/
+│   └── scripts/
+└── sync.py                        # 自动同步脚本
 ```
 
 ## 添加新的同步源
@@ -116,6 +129,7 @@ SOURCES = [
 
 - [Jonnyan404](https://github.com/Jonnyan404) — cloud-clipboard-go
 - [Openwrt-Passwall](https://github.com/Openwrt-Passwall) — openwrt-passwall
+- [eamonxg](https://github.com/eamonxg) — luci-theme-aurora & luci-app-aurora-config
 
 ## 许可证
 
