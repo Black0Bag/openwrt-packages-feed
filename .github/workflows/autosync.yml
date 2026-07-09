@@ -39,9 +39,9 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             git add -A
             git commit -m "auto-sync: $(date -u '+%Y-%m-%d %H:%M UTC')"
-            DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main")
+            DEFAULT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
             git push origin "HEAD:${DEFAULT_BRANCH}"
-            echo "✅ 变更已推送"
+            echo "✅ 变更已推送到 ${DEFAULT_BRANCH}"
           else
             echo "✅ 无变更，跳过推送"
           fi
