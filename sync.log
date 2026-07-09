@@ -1,149 +1,89 @@
-[19:50:58] ============================================================
-[19:50:58] Auto-sync 启动
-[19:50:58] 源仓库数: 2
-[19:50:58] 本地 tracked 文件: 14 个
-[19:50:58] ━━━ 同步: Jonnyan404/cloud-clipboard-go/openwrt/luci-app-cloud-clipboard → luci-app-cloud-clipboard/ ━━━
-[19:50:58]   Jonnyan404/cloud-clipboard-go 默认分支: main
-[19:50:58]   openwrt/luci-app-cloud-clipboard: 12 个文件
-[19:50:59]   ~ 更新: luci-app-cloud-clipboard/Makefile
-[19:50:59]   ~ 更新: luci-app-cloud-clipboard/luasrc/controller/cloud-clipboard.lua
-[19:50:59]   ~ 更新: luci-app-cloud-clipboard/luasrc/model/cbi/cloud-clipboard-config.lua
-[19:50:59]   ~ 更新: luci-app-cloud-clipboard/luasrc/model/cbi/cloud-clipboard.lua
-[19:50:59]   ~ 更新: luci-app-cloud-clipboard/luasrc/view/cloud-clipboard/access.htm
-[19:51:00]   ~ 更新: luci-app-cloud-clipboard/luasrc/view/cloud-clipboard/json_editor.htm
-[19:51:00]   ~ 更新: luci-app-cloud-clipboard/luasrc/view/cloud-clipboard/log.htm
-[19:51:00]   ~ 更新: luci-app-cloud-clipboard/luasrc/view/cloud-clipboard/status.htm
-[19:51:00]   ~ 更新: luci-app-cloud-clipboard/root/etc/uci-defaults/luci-cloud-clipboard
-[19:51:00]   ~ 更新: luci-app-cloud-clipboard/root/usr/share/luci/i18n/cloud-clipboard.po
-[19:51:01]   ~ 更新: luci-app-cloud-clipboard/root/usr/share/luci/menu.d/luci-app-cloud-clipboard.json
-[19:51:01]   ~ 更新: luci-app-cloud-clipboard/root/usr/share/rpcd/acl.d/luci-app-cloud-clipboard.json
-[19:51:01]   小计: +0 ~12 -0 错误:0
-[19:51:01] ━━━ 同步: Openwrt-Passwall/openwrt-passwall/luci-app-passwall → luci-app-passwall/ ━━━
-[19:51:01]   Openwrt-Passwall/openwrt-passwall 默认分支: main
-[19:51:01]   luci-app-passwall: 119 个文件
-[19:51:02]   + 新增: luci-app-passwall/Makefile
-[19:51:02]   + 新增: luci-app-passwall/htdocs/luci-static/resources/view/passwall/Sortable.min.js
-[19:51:02]   + 新增: luci-app-passwall/htdocs/luci-static/resources/view/passwall/qrcode.min.js
-[19:51:02]   + 新增: luci-app-passwall/luasrc/controller/passwall.lua
-[19:51:02]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/acl.lua
-[19:51:03]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/acl_config.lua
-[19:51:03]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/app_update.lua
-[19:51:03]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/global.lua
-[19:51:03]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/haproxy.lua
-[19:51:04]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/include/shunt_options.lua
-[19:51:04]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/log.lua
-[19:51:04]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/node_config.lua
-[19:51:04]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/node_list.lua
-[19:51:04]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/node_subscribe.lua
-[19:51:05]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/node_subscribe_config.lua
-[19:51:05]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/other.lua
-[19:51:05]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/rule.lua
-[19:51:05]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/rule_list.lua
-[19:51:06]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/shunt_rules.lua
-[19:51:06]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/socks_config.lua
-[19:51:06]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/type/hysteria2.lua
-[19:51:06]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/type/naive.lua
-[19:51:06]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/type/ray.lua
-[19:51:07]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/type/sing-box.lua
-[19:51:07]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/type/ss-rust.lua
-[19:51:07]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/client/type/ssr.lua
-[19:51:07]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/server/index.lua
-[19:51:07]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/server/type/hysteria2.lua
-[19:51:08]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/server/type/ray.lua
-[19:51:08]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/server/type/sing-box.lua
-[19:51:08]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/server/type/socks.lua
-[19:51:08]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/server/type/ss-rust.lua
-[19:51:09]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/server/type/ssr.lua
-[19:51:09]   + 新增: luci-app-passwall/luasrc/model/cbi/passwall/server/user.lua
-[19:51:09]   + 新增: luci-app-passwall/luasrc/passwall/api.lua
-[19:51:09]   + 新增: luci-app-passwall/luasrc/passwall/com.lua
-[19:51:09]   + 新增: luci-app-passwall/luasrc/passwall/server_app.lua
-[19:51:10]   + 新增: luci-app-passwall/luasrc/passwall/util_hysteria2.lua
-[19:51:10]   + 新增: luci-app-passwall/luasrc/passwall/util_naiveproxy.lua
-[19:51:10]   + 新增: luci-app-passwall/luasrc/passwall/util_shadowsocks.lua
-[19:51:10]   + 新增: luci-app-passwall/luasrc/passwall/util_sing-box.lua
-[19:51:11]   + 新增: luci-app-passwall/luasrc/passwall/util_xray.lua
-[19:51:11]   + 新增: luci-app-passwall/luasrc/view/passwall/acl/view_chinadns_log.htm
-[19:51:11]   + 新增: luci-app-passwall/luasrc/view/passwall/app_update/app_version.htm
-[19:51:11]   + 新增: luci-app-passwall/luasrc/view/passwall/cbi/hidevalue.htm
-[19:51:11]   + 新增: luci-app-passwall/luasrc/view/passwall/cbi/nodes_dynamiclist.htm
-[19:51:12]   + 新增: luci-app-passwall/luasrc/view/passwall/cbi/nodes_dynamiclist_com.htm
-[19:51:12]   + 新增: luci-app-passwall/luasrc/view/passwall/cbi/nodes_listvalue.htm
-[19:51:12]   + 新增: luci-app-passwall/luasrc/view/passwall/cbi/nodes_listvalue_com.htm
-[19:51:12]   + 新增: luci-app-passwall/luasrc/view/passwall/cbi/nodes_multivalue.htm
-[19:51:12]   + 新增: luci-app-passwall/luasrc/view/passwall/cbi/nodes_multivalue_com.htm
-[19:51:13]   + 新增: luci-app-passwall/luasrc/view/passwall/cbi/nodes_value.htm
-[19:51:13]   + 新增: luci-app-passwall/luasrc/view/passwall/cbi/nodes_value_com.htm
-[19:51:13]   + 新增: luci-app-passwall/luasrc/view/passwall/cbi/optimize_cbi_ui.htm
-[19:51:13]   + 新增: luci-app-passwall/luasrc/view/passwall/global/backup.htm
-[19:51:14]   + 新增: luci-app-passwall/luasrc/view/passwall/global/faq.htm
-[19:51:14]   + 新增: luci-app-passwall/luasrc/view/passwall/global/footer.htm
-[19:51:14]   + 新增: luci-app-passwall/luasrc/view/passwall/global/proxy.htm
-[19:51:14]   + 新增: luci-app-passwall/luasrc/view/passwall/global/status.htm
-[19:51:14]   + 新增: luci-app-passwall/luasrc/view/passwall/haproxy/js.htm
-[19:51:15]   + 新增: luci-app-passwall/luasrc/view/passwall/haproxy/status.htm
-[19:51:15]   + 新增: luci-app-passwall/luasrc/view/passwall/include/shunt_options.htm
-[19:51:15]   + 新增: luci-app-passwall/luasrc/view/passwall/log/log.htm
-[19:51:15]   + 新增: luci-app-passwall/luasrc/view/passwall/node_config/footer.htm
-[19:51:15]   + 新增: luci-app-passwall/luasrc/view/passwall/node_config/header.htm
-[19:51:16]   + 新增: luci-app-passwall/luasrc/view/passwall/node_config/link_share_man.htm
-[19:51:16]   + 新增: luci-app-passwall/luasrc/view/passwall/node_list/link_add_node.htm
-[19:51:16]   + 新增: luci-app-passwall/luasrc/view/passwall/node_list/node_list.htm
-[19:51:16]   + 新增: luci-app-passwall/luasrc/view/passwall/node_subscribe/js.htm
-[19:51:17]   + 新增: luci-app-passwall/luasrc/view/passwall/rule/rule_version.htm
-[19:51:17]   + 新增: luci-app-passwall/luasrc/view/passwall/rule_list/geoview.htm
-[19:51:17]   + 新增: luci-app-passwall/luasrc/view/passwall/rule_list/js.htm
-[19:51:17]   + 新增: luci-app-passwall/luasrc/view/passwall/server/config_footer.htm
-[19:51:17]   + 新增: luci-app-passwall/luasrc/view/passwall/server/config_header.htm
-[19:51:18]   + 新增: luci-app-passwall/luasrc/view/passwall/server/log.htm
-[19:51:18]   + 新增: luci-app-passwall/luasrc/view/passwall/server/users_list_status.htm
-[19:51:18]   + 新增: luci-app-passwall/luasrc/view/passwall/socks_auto_switch/btn.htm
-[19:51:18]   + 新增: luci-app-passwall/po/zh-cn/passwall.po
-[19:51:18]   + 新增: luci-app-passwall/po/zh_Hans
-[19:51:19]   + 新增: luci-app-passwall/root/etc/config/passwall_server
-[19:51:19]   + 新增: luci-app-passwall/root/etc/hotplug.d/iface/98-passwall
-[19:51:19]   + 新增: luci-app-passwall/root/etc/init.d/passwall
-[19:51:19]   + 新增: luci-app-passwall/root/etc/init.d/passwall_server
-[19:51:20]   + 新增: luci-app-passwall/root/etc/uci-defaults/luci-passwall
-[19:51:20]   + 新增: luci-app-passwall/root/usr/share/passwall/0_default_config
-[19:51:20]   + 新增: luci-app-passwall/root/usr/share/passwall/app.sh
-[19:51:20]   + 新增: luci-app-passwall/root/usr/share/passwall/clash_subconverter.lua
-[19:51:20]   + 新增: luci-app-passwall/root/usr/share/passwall/haproxy.lua
-[19:51:21]   + 新增: luci-app-passwall/root/usr/share/passwall/haproxy_check.sh
-[19:51:21]   + 新增: luci-app-passwall/root/usr/share/passwall/helper_chinadns_add.lua
-[19:51:21]   + 新增: luci-app-passwall/root/usr/share/passwall/helper_dnsmasq.lua
-[19:51:21]   + 新增: luci-app-passwall/root/usr/share/passwall/helper_smartdns.sh
-[19:51:21]   + 新增: luci-app-passwall/root/usr/share/passwall/helper_smartdns_add.lua
-[19:51:22]   + 新增: luci-app-passwall/root/usr/share/passwall/iptables.sh
-[19:51:22]   + 新增: luci-app-passwall/root/usr/share/passwall/lease2hosts.sh
-[19:51:22]   + 新增: luci-app-passwall/root/usr/share/passwall/monitor.sh
-[19:51:22]   + 新增: luci-app-passwall/root/usr/share/passwall/nftables.sh
-[19:51:23]   + 新增: luci-app-passwall/root/usr/share/passwall/rule_update.lua
-[19:51:23]   + 新增: luci-app-passwall/root/usr/share/passwall/rules/block_host
-[19:51:23]   + 新增: luci-app-passwall/root/usr/share/passwall/rules/block_ip
-[19:51:24]   + 新增: luci-app-passwall/root/usr/share/passwall/rules/chnlist
-[19:51:24]   + 新增: luci-app-passwall/root/usr/share/passwall/rules/chnroute
-[19:51:24]   + 新增: luci-app-passwall/root/usr/share/passwall/rules/chnroute6
-[19:51:24]   + 新增: luci-app-passwall/root/usr/share/passwall/rules/direct_host
-[19:51:25]   + 新增: luci-app-passwall/root/usr/share/passwall/rules/direct_ip
-[19:51:25]   + 新增: luci-app-passwall/root/usr/share/passwall/rules/domains_excluded
-[19:51:25]   + 新增: luci-app-passwall/root/usr/share/passwall/rules/gfwlist
-[19:51:25]   + 新增: luci-app-passwall/root/usr/share/passwall/rules/lanlist_ipv4
-[19:51:26]   + 新增: luci-app-passwall/root/usr/share/passwall/rules/lanlist_ipv6
-[19:51:26]   + 新增: luci-app-passwall/root/usr/share/passwall/rules/proxy_host
-[19:51:26]   + 新增: luci-app-passwall/root/usr/share/passwall/rules/proxy_ip
-[19:51:26]   + 新增: luci-app-passwall/root/usr/share/passwall/socks_auto_switch.sh
-[19:51:26]   + 新增: luci-app-passwall/root/usr/share/passwall/subscribe.lua
-[19:51:27]   + 新增: luci-app-passwall/root/usr/share/passwall/tasks.sh
-[19:51:27]   + 新增: luci-app-passwall/root/usr/share/passwall/test.sh
-[19:51:27]   + 新增: luci-app-passwall/root/usr/share/passwall/utils.sh
-[19:51:27]   + 新增: luci-app-passwall/root/usr/share/rpcd/acl.d/luci-app-passwall.json
-[19:51:27]   + 新增: luci-app-passwall/root/usr/share/ucitrack/luci-app-passwall-server.json
-[19:51:28]   + 新增: luci-app-passwall/root/usr/share/ucitrack/luci-app-passwall.json
-[19:51:28]   小计: +119 ~0 -0 错误:0
-[19:51:28] 
-[19:51:28] ━━━ 汇总 ━━━
-[19:51:28]   新增: 119
-[19:51:28]   更新: 12
-[19:51:28]   删除: 0
-[19:51:28]   错误: 0
+[20:09:06] ============================================================
+[20:09:06] Auto-sync 启动
+[20:09:06] 源仓库数: 4
+[20:09:06] 本地 tracked 文件: 135 个
+[20:09:06] ━━━ 同步: Jonnyan404/cloud-clipboard-go/openwrt/luci-app-cloud-clipboard → luci-app-cloud-clipboard/ ━━━
+[20:09:06]   Jonnyan404/cloud-clipboard-go 默认分支: main
+[20:09:07]   openwrt/luci-app-cloud-clipboard: 12 个文件
+[20:09:07]   小计: +0 ~0 -0 错误:0
+[20:09:07] ━━━ 同步: Openwrt-Passwall/openwrt-passwall/luci-app-passwall → luci-app-passwall/ ━━━
+[20:09:07]   Openwrt-Passwall/openwrt-passwall 默认分支: main
+[20:09:07]   luci-app-passwall: 119 个文件
+[20:09:07]   小计: +0 ~0 -0 错误:0
+[20:09:07] ━━━ 同步: eamonxg/luci-theme-aurora/(root) → luci-theme-aurora/ ━━━
+[20:09:08]   eamonxg/luci-theme-aurora 默认分支: master
+[20:09:08]   (root): 28 个文件 (排除 8 项)
+[20:09:08]   + 新增: luci-theme-aurora/LICENSE
+[20:09:08]   + 新增: luci-theme-aurora/Makefile
+[20:09:09]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/fonts/aurora-font.css
+[20:09:09]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/fonts/lato-v24-latin-regular.woff2
+[20:09:09]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/images/app-icon-192x192.png
+[20:09:09]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/images/app-icon-512x512.png
+[20:09:10]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/images/app.webmanifest
+[20:09:10]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/images/apple-touch-icon.png
+[20:09:10]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/images/favicon.ico
+[20:09:10]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/images/logo.svg
+[20:09:11]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/images/network.svg
+[20:09:11]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/images/overview.svg
+[20:09:11]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/images/software.svg
+[20:09:11]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/images/system.svg
+[20:09:11]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/login.css
+[20:09:12]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/main.css
+[20:09:12]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/patches/admin-dashboard.css
+[20:09:12]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/patches/admin-modem-modemdata-modempreview.css
+[20:09:12]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/patches/admin-network-network.css
+[20:09:12]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/patches/admin-services-openclash-config.css
+[20:09:13]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/patches/admin-services-openclash-settings.css
+[20:09:13]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/patches/admin-statistics-graphs.css
+[20:09:13]   + 新增: luci-theme-aurora/htdocs/luci-static/aurora/patches/admin-system-filemanager.css
+[20:09:13]   + 新增: luci-theme-aurora/htdocs/luci-static/resources/menu-aurora.js
+[20:09:14]   + 新增: luci-theme-aurora/root/etc/uci-defaults/30_luci-theme-aurora
+[20:09:14]   + 新增: luci-theme-aurora/ucode/template/themes/aurora/footer.ut
+[20:09:14]   + 新增: luci-theme-aurora/ucode/template/themes/aurora/header.ut
+[20:09:14]   + 新增: luci-theme-aurora/ucode/template/themes/aurora/sysauth.ut
+[20:09:14]   小计: +28 ~0 -0 错误:0
+[20:09:14] ━━━ 同步: eamonxg/luci-app-aurora-config/(root) → luci-app-aurora-config/ ━━━
+[20:09:14]   eamonxg/luci-app-aurora-config 默认分支: master
+[20:09:15]   (root): 35 个文件 (排除 7 项)
+[20:09:15]   + 新增: luci-app-aurora-config/LICENSE
+[20:09:15]   + 新增: luci-app-aurora-config/Makefile
+[20:09:15]   + 新增: luci-app-aurora-config/htdocs/luci-static/resources/utils/color.global.js
+[20:09:16]   + 新增: luci-app-aurora-config/htdocs/luci-static/resources/utils/tokens.global.js
+[20:09:16]   + 新增: luci-app-aurora-config/htdocs/luci-static/resources/utils/version-api.js
+[20:09:16]   + 新增: luci-app-aurora-config/htdocs/luci-static/resources/view/aurora/theme.js
+[20:09:16]   + 新增: luci-app-aurora-config/htdocs/luci-static/resources/view/aurora/version.js
+[20:09:17]   + 新增: luci-app-aurora-config/po/de/aurora-config.po
+[20:09:17]   + 新增: luci-app-aurora-config/po/es/aurora-config.po
+[20:09:17]   + 新增: luci-app-aurora-config/po/fr/aurora-config.po
+[20:09:17]   + 新增: luci-app-aurora-config/po/id/aurora-config.po
+[20:09:18]   + 新增: luci-app-aurora-config/po/it/aurora-config.po
+[20:09:18]   + 新增: luci-app-aurora-config/po/ja/aurora-config.po
+[20:09:18]   + 新增: luci-app-aurora-config/po/ko/aurora-config.po
+[20:09:18]   + 新增: luci-app-aurora-config/po/nl/aurora-config.po
+[20:09:19]   + 新增: luci-app-aurora-config/po/pl/aurora-config.po
+[20:09:19]   + 新增: luci-app-aurora-config/po/ru/aurora-config.po
+[20:09:19]   + 新增: luci-app-aurora-config/po/templates/aurora-config.pot
+[20:09:19]   + 新增: luci-app-aurora-config/po/tr/aurora-config.po
+[20:09:20]   + 新增: luci-app-aurora-config/po/uk/aurora-config.po
+[20:09:20]   + 新增: luci-app-aurora-config/po/zh_Hans/aurora-config.po
+[20:09:20]   + 新增: luci-app-aurora-config/po/zh_Hant/aurora-config.po
+[20:09:20]   + 新增: luci-app-aurora-config/root/etc/uci-defaults/80_aurora
+[20:09:21]   + 新增: luci-app-aurora-config/root/usr/libexec/rpcd/luci.aurora
+[20:09:21]   + 新增: luci-app-aurora-config/root/usr/share/aurora/amber-sand.template
+[20:09:21]   + 新增: luci-app-aurora-config/root/usr/share/aurora/color-tokens.conf
+[20:09:21]   + 新增: luci-app-aurora-config/root/usr/share/aurora/default.template
+[20:09:21]   + 新增: luci-app-aurora-config/root/usr/share/aurora/font-presets.conf
+[20:09:22]   + 新增: luci-app-aurora-config/root/usr/share/aurora/monochrome.template
+[20:09:22]   + 新增: luci-app-aurora-config/root/usr/share/aurora/sage-green.template
+[20:09:22]   + 新增: luci-app-aurora-config/root/usr/share/aurora/sky-blue.template
+[20:09:22]   + 新增: luci-app-aurora-config/root/usr/share/luci/menu.d/luci-app-aurora.json
+[20:09:22]   + 新增: luci-app-aurora-config/root/usr/share/rpcd/acl.d/luci-app-aurora.json
+[20:09:23]   + 新增: luci-app-aurora-config/scripts/gen-presets.mjs
+[20:09:23]   + 新增: luci-app-aurora-config/scripts/sync-tokens.mjs
+[20:09:23]   小计: +35 ~0 -0 错误:0
+[20:09:23] 
+[20:09:23] ━━━ 汇总 ━━━
+[20:09:23]   新增: 63
+[20:09:23]   更新: 0
+[20:09:23]   删除: 0
+[20:09:23]   错误: 0
