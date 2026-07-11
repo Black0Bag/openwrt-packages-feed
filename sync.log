@@ -1,27 +1,58 @@
-[06:47:46] ============================================================
-[06:47:46] Auto-sync 启动
-[06:47:46] 源仓库数: 4
-[06:47:46] 本地 tracked 文件: 198 个
-[06:47:46] ━━━ 同步: Jonnyan404/cloud-clipboard-go/openwrt/luci-app-cloud-clipboard → luci-app-cloud-clipboard/ ━━━
-[06:47:47]   Jonnyan404/cloud-clipboard-go 默认分支: main
-[06:47:47]   openwrt/luci-app-cloud-clipboard: 12 个文件
-[06:47:47]   小计: +0 ~0 -0 错误:0
-[06:47:47] ━━━ 同步: Openwrt-Passwall/openwrt-passwall/luci-app-passwall → luci-app-passwall/ ━━━
-[06:47:48]   Openwrt-Passwall/openwrt-passwall 默认分支: main
-[06:47:48]   luci-app-passwall: 119 个文件
-[06:47:48]   小计: +0 ~0 -0 错误:0
-[06:47:48] ━━━ 同步: eamonxg/luci-theme-aurora/(root) → luci-theme-aurora/ ━━━
-[06:47:49]   eamonxg/luci-theme-aurora 默认分支: master
-[06:47:49]   (root): 28 个文件 (排除 8 项)
-[06:47:49]   小计: +0 ~0 -0 错误:0
-[06:47:49] ━━━ 同步: eamonxg/luci-app-aurora-config/(root) → luci-app-aurora-config/ ━━━
-[06:47:49]   eamonxg/luci-app-aurora-config 默认分支: master
-[06:47:50]   (root): 35 个文件 (排除 7 项)
-[06:47:50]   小计: +0 ~0 -0 错误:0
-[06:47:50] 
-[06:47:50] ━━━ 汇总 ━━━
-[06:47:50]   新增: 0
-[06:47:50]   更新: 0
-[06:47:50]   删除: 0
-[06:47:50]   错误: 0
-[06:47:50] ✅ 所有文件已是最新
+[09:34:24] ============================================================
+[09:34:24] Auto-sync 启动
+[09:34:24] 源仓库数: 4
+[09:34:24] 本地 tracked 文件: 198 个
+[09:34:24] ━━━ 同步: Jonnyan404/cloud-clipboard-go/openwrt/luci-app-cloud-clipboard → luci-app-cloud-clipboard/ ━━━
+[09:34:24]   Jonnyan404/cloud-clipboard-go 默认分支: main
+[09:34:24]   openwrt/luci-app-cloud-clipboard: 12 个文件
+[09:34:24]   小计: +0 ~0 -0 错误:0
+[09:34:24] ━━━ 同步: Openwrt-Passwall/openwrt-passwall/luci-app-passwall → luci-app-passwall/ ━━━
+[09:34:25]   Openwrt-Passwall/openwrt-passwall 默认分支: main
+[09:34:25]   luci-app-passwall: 119 个文件
+[09:34:25]   ~ 更新: luci-app-passwall/luasrc/model/cbi/passwall/client/type/ray.lua
+[09:34:25]   ~ 更新: luci-app-passwall/luasrc/passwall/util_xray.lua
+[09:34:25]   小计: +0 ~2 -0 错误:0
+[09:34:25] ━━━ 同步: eamonxg/luci-theme-aurora/(root) → luci-theme-aurora/ ━━━
+[09:34:26]   eamonxg/luci-theme-aurora 默认分支: master
+[09:34:26]   (root): 28 个文件 (排除 8 项)
+[09:34:26]   ~ 更新: luci-theme-aurora/Makefile
+[09:34:26]   ~ 更新: luci-theme-aurora/htdocs/luci-static/aurora/login.css
+[09:34:26]   ~ 更新: luci-theme-aurora/htdocs/luci-static/aurora/main.css
+[09:34:27]   ~ 更新: luci-theme-aurora/htdocs/luci-static/resources/menu-aurora.js
+[09:34:27]   ~ 更新: luci-theme-aurora/ucode/template/themes/aurora/header.ut
+[09:34:27]   小计: +0 ~5 -0 错误:0
+[09:34:27] ━━━ 同步: eamonxg/luci-app-aurora-config/(root) → luci-app-aurora-config/ ━━━
+[09:34:27]   eamonxg/luci-app-aurora-config 默认分支: master
+[09:34:27]   (root): 35 个文件 (排除 7 项)
+[09:34:27]   ~ 更新: luci-app-aurora-config/Makefile
+[09:34:28]   ~ 更新: luci-app-aurora-config/htdocs/luci-static/resources/utils/tokens.global.js
+[09:34:28]   ~ 更新: luci-app-aurora-config/htdocs/luci-static/resources/view/aurora/theme.js
+[09:34:28]   ~ 更新: luci-app-aurora-config/po/de/aurora-config.po
+[09:34:28]   ~ 更新: luci-app-aurora-config/po/es/aurora-config.po
+[09:34:28]   ~ 更新: luci-app-aurora-config/po/fr/aurora-config.po
+[09:34:29]   ~ 更新: luci-app-aurora-config/po/id/aurora-config.po
+[09:34:29]   ~ 更新: luci-app-aurora-config/po/it/aurora-config.po
+[09:34:29]   ~ 更新: luci-app-aurora-config/po/ja/aurora-config.po
+[09:34:29]   ~ 更新: luci-app-aurora-config/po/ko/aurora-config.po
+[09:34:29]   ~ 更新: luci-app-aurora-config/po/nl/aurora-config.po
+[09:34:30]   ~ 更新: luci-app-aurora-config/po/pl/aurora-config.po
+[09:34:30]   ~ 更新: luci-app-aurora-config/po/ru/aurora-config.po
+[09:34:30]   ~ 更新: luci-app-aurora-config/po/templates/aurora-config.pot
+[09:34:30]   ~ 更新: luci-app-aurora-config/po/tr/aurora-config.po
+[09:34:30]   ~ 更新: luci-app-aurora-config/po/uk/aurora-config.po
+[09:34:30]   ~ 更新: luci-app-aurora-config/po/zh_Hans/aurora-config.po
+[09:34:31]   ~ 更新: luci-app-aurora-config/po/zh_Hant/aurora-config.po
+[09:34:31]   ~ 更新: luci-app-aurora-config/root/etc/uci-defaults/80_aurora
+[09:34:31]   ~ 更新: luci-app-aurora-config/root/usr/share/aurora/amber-sand.template
+[09:34:31]   ~ 更新: luci-app-aurora-config/root/usr/share/aurora/color-tokens.conf
+[09:34:31]   ~ 更新: luci-app-aurora-config/root/usr/share/aurora/default.template
+[09:34:31]   ~ 更新: luci-app-aurora-config/root/usr/share/aurora/monochrome.template
+[09:34:32]   ~ 更新: luci-app-aurora-config/root/usr/share/aurora/sage-green.template
+[09:34:32]   ~ 更新: luci-app-aurora-config/root/usr/share/aurora/sky-blue.template
+[09:34:32]   小计: +0 ~25 -0 错误:0
+[09:34:32] 
+[09:34:32] ━━━ 汇总 ━━━
+[09:34:32]   新增: 0
+[09:34:32]   更新: 32
+[09:34:32]   删除: 0
+[09:34:32]   错误: 0
