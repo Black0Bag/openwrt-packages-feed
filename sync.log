@@ -1,61 +1,27 @@
-[06:21:45] ============================================================
-[06:21:45] Auto-sync 启动
-[06:21:45] 源仓库数: 4
-[06:21:45] 本地 tracked 文件: 200 个
-[06:21:45] ━━━ 同步: Jonnyan404/cloud-clipboard-go/openwrt/luci-app-cloud-clipboard → luci-app-cloud-clipboard/ ━━━
-[06:21:45]   Jonnyan404/cloud-clipboard-go 默认分支: main
-[06:21:46]   openwrt/luci-app-cloud-clipboard: 12 个文件
-[06:21:46]   小计: +0 ~0 -0 错误:0
-[06:21:46] ━━━ 同步: Openwrt-Passwall/openwrt-passwall/luci-app-passwall → luci-app-passwall/ ━━━
-[06:21:46]   Openwrt-Passwall/openwrt-passwall 默认分支: main
-[06:21:46]   luci-app-passwall: 119 个文件
-[06:21:47]   ~ 更新: luci-app-passwall/luasrc/controller/passwall.lua
-[06:21:47]   ~ 更新: luci-app-passwall/luasrc/model/cbi/passwall/client/app_update.lua
-[06:21:47]   ~ 更新: luci-app-passwall/luasrc/model/cbi/passwall/client/node_subscribe_config.lua
-[06:21:47]   ~ 更新: luci-app-passwall/luasrc/model/cbi/passwall/client/other.lua
-[06:21:48]   ~ 更新: luci-app-passwall/luasrc/model/cbi/passwall/client/rule.lua
-[06:21:48]   ~ 更新: luci-app-passwall/luasrc/model/cbi/passwall/client/type/ray.lua
-[06:21:48]   ~ 更新: luci-app-passwall/luasrc/model/cbi/passwall/client/type/sing-box.lua
-[06:21:48]   ~ 更新: luci-app-passwall/luasrc/passwall/api.lua
-[06:21:49]   ~ 更新: luci-app-passwall/luasrc/view/passwall/app_update/app_version.htm
-[06:21:49]   ~ 更新: luci-app-passwall/po/zh-cn/passwall.po
-[06:21:49]   ~ 更新: luci-app-passwall/root/usr/share/passwall/0_default_config
-[06:21:49]   ~ 更新: luci-app-passwall/root/usr/share/passwall/app.sh
-[06:21:50]   ~ 更新: luci-app-passwall/root/usr/share/passwall/iptables.sh
-[06:21:50]   ~ 更新: luci-app-passwall/root/usr/share/passwall/nftables.sh
-[06:21:50]   ~ 更新: luci-app-passwall/root/usr/share/passwall/tasks.sh
-[06:21:50]   ~ 更新: luci-app-passwall/root/usr/share/passwall/utils.sh
-[06:21:50]   小计: +0 ~16 -0 错误:0
-[06:21:50] ━━━ 同步: eamonxg/luci-theme-aurora/(root) → luci-theme-aurora/ ━━━
-[06:21:51]   eamonxg/luci-theme-aurora 默认分支: master
-[06:21:51]   (root): 28 个文件 (排除 8 项)
-[06:21:51]   小计: +0 ~0 -0 错误:0
-[06:21:51] ━━━ 同步: eamonxg/luci-app-aurora-config/(root) → luci-app-aurora-config/ ━━━
-[06:21:51]   eamonxg/luci-app-aurora-config 默认分支: master
-[06:21:52]   (root): 38 个文件 (排除 7 项)
-[06:21:52]   ~ 更新: luci-app-aurora-config/Makefile
-[06:21:52]   + 新增: luci-app-aurora-config/htdocs/luci-static/resources/utils/asset-upload.js
-[06:21:52]   ~ 更新: luci-app-aurora-config/htdocs/luci-static/resources/view/aurora/theme.js
-[06:21:53]   ~ 更新: luci-app-aurora-config/po/de/aurora-config.po
-[06:21:53]   ~ 更新: luci-app-aurora-config/po/es/aurora-config.po
-[06:21:53]   ~ 更新: luci-app-aurora-config/po/fr/aurora-config.po
-[06:21:53]   ~ 更新: luci-app-aurora-config/po/id/aurora-config.po
-[06:21:54]   ~ 更新: luci-app-aurora-config/po/it/aurora-config.po
-[06:21:54]   ~ 更新: luci-app-aurora-config/po/ja/aurora-config.po
-[06:21:54]   ~ 更新: luci-app-aurora-config/po/ko/aurora-config.po
-[06:21:54]   ~ 更新: luci-app-aurora-config/po/nl/aurora-config.po
-[06:21:55]   ~ 更新: luci-app-aurora-config/po/pl/aurora-config.po
-[06:21:55]   ~ 更新: luci-app-aurora-config/po/ru/aurora-config.po
-[06:21:55]   ~ 更新: luci-app-aurora-config/po/templates/aurora-config.pot
-[06:21:55]   ~ 更新: luci-app-aurora-config/po/tr/aurora-config.po
-[06:21:56]   ~ 更新: luci-app-aurora-config/po/uk/aurora-config.po
-[06:21:56]   ~ 更新: luci-app-aurora-config/po/zh_Hans/aurora-config.po
-[06:21:56]   ~ 更新: luci-app-aurora-config/po/zh_Hant/aurora-config.po
-[06:21:56]   ~ 更新: luci-app-aurora-config/root/usr/libexec/rpcd/luci.aurora
-[06:21:56]   小计: +1 ~18 -0 错误:0
-[06:21:56] 
-[06:21:56] ━━━ 汇总 ━━━
-[06:21:56]   新增: 1
-[06:21:56]   更新: 34
-[06:21:56]   删除: 0
-[06:21:56]   错误: 0
+[05:32:23] ============================================================
+[05:32:23] Auto-sync 启动
+[05:32:23] 源仓库数: 4
+[05:32:23] 本地 tracked 文件: 201 个
+[05:32:23] ━━━ 同步: Jonnyan404/cloud-clipboard-go/openwrt/luci-app-cloud-clipboard → luci-app-cloud-clipboard/ ━━━
+[05:32:23]   Jonnyan404/cloud-clipboard-go 默认分支: main
+[05:32:23]   openwrt/luci-app-cloud-clipboard: 12 个文件
+[05:32:23]   小计: +0 ~0 -0 错误:0
+[05:32:23] ━━━ 同步: Openwrt-Passwall/openwrt-passwall/luci-app-passwall → luci-app-passwall/ ━━━
+[05:32:24]   Openwrt-Passwall/openwrt-passwall 默认分支: main
+[05:32:24]   luci-app-passwall: 119 个文件
+[05:32:24]   ~ 更新: luci-app-passwall/luasrc/passwall/util_xray.lua
+[05:32:24]   小计: +0 ~1 -0 错误:0
+[05:32:24] ━━━ 同步: eamonxg/luci-theme-aurora/(root) → luci-theme-aurora/ ━━━
+[05:32:25]   eamonxg/luci-theme-aurora 默认分支: master
+[05:32:25]   (root): 28 个文件 (排除 8 项)
+[05:32:25]   小计: +0 ~0 -0 错误:0
+[05:32:25] ━━━ 同步: eamonxg/luci-app-aurora-config/(root) → luci-app-aurora-config/ ━━━
+[05:32:25]   eamonxg/luci-app-aurora-config 默认分支: master
+[05:32:26]   (root): 38 个文件 (排除 7 项)
+[05:32:26]   小计: +0 ~0 -0 错误:0
+[05:32:26] 
+[05:32:26] ━━━ 汇总 ━━━
+[05:32:26]   新增: 0
+[05:32:26]   更新: 1
+[05:32:26]   删除: 0
+[05:32:26]   错误: 0
