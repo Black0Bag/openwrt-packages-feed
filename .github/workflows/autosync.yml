@@ -27,6 +27,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install dependencies
+        run: pip install pyyaml
+
       - name: Auto-sync targets
         env:
           GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
