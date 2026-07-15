@@ -8,6 +8,6 @@ set -euo pipefail
 mkdir -p "luci-app-cloud-clipboard/root/usr/bin"
 
 curl -sL "https://github.com/Jonnyan404/cloud-clipboard-go/releases/download/v4.7.5/cloud-clipboard-go_Linux_aarch64.tar.gz" \
-  | tar -xz -C /tmp cloud-clipboard
+  | tar -xz -C /tmp cloud-clipboard-go
 
-cp /tmp/cloud-clipboard "luci-app-cloud-clipboard/root/usr/bin/"
+cp /tmp/cloud-clipboard-go "luci-app-cloud-clipboard/root/usr/bin/cloud-clipboard"
