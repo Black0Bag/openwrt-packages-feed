@@ -1,5 +1,8 @@
 # OpenWrt Packages Feed
 
+> **AI Agent 请先阅读 [`.github/AGENT_CONTEXT.md`](.github/AGENT_CONTEXT.md) 再操作本仓库。**
+
+
 > ImmortalWrt 补充软件源 — 自动汇聚 GitHub 上游 OpenWrt 软件包
 
 本仓库通过 GitHub Actions 每日自动同步上游项目的 LuCI 应用包，可直接作为 ImmortalWrt/OpenWrt 的额外 feed 使用。
@@ -104,3 +107,15 @@ SOURCES = [
 ## 许可证
 
 各软件包的版权与许可证归上游项目所有，请查阅对应仓库。
+
+## AI Agent 操作指引
+
+如果使用 AI Agent（如 Copilot、Cursor、Claude Code、小万/Omnibot 等）操作本仓库，请确保 Agent 首先阅读以下文件：
+
+| 文件 | 适用 Agent | 说明 |
+|------|----------|------|
+| [`.github/AGENT_CONTEXT.md`](.github/AGENT_CONTEXT.md) | 所有 Agent | 完整的仓库上下文、同步机制、安全规则 |
+| [`.github/copilot-instructions.md`](.github/copilot-instructions.md) | GitHub Copilot | Copilot 自动读取的上下文文件 |
+| [`.github/cursor-rules.mdc`](.github/cursor-rules.mdc) | Cursor / Windsurf | Cursor rules 格式的仓库规则 |
+
+> 这些文件位于 `.github/` 目录下，受 `sync.py` 的 protected 列表保护，不会被自动同步删除。
