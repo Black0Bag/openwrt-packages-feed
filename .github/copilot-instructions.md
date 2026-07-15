@@ -1,29 +1,39 @@
 # Copilot Instructions — openwrt-packages-feed
 
-This repository is an ImmortalWrt/OpenWrt package feed that auto-syncs packages from upstream repos daily via GitHub Actions.
+> **This file is a shortcut pointer.** The single authoritative source for repository context is **`.github/AGENT_CONTEXT.md`**. Always read it for full details.
 
-## CRITICAL: Read Before Operating
+## TL;DR
 
-**Always read `.github/AGENT_CONTEXT.md` first.** It contains the full repository context, sync mechanics, and safety rules.
+1. This repo auto-syncs OpenWrt packages from upstream daily (UTC 03:00) via GitHub Actions.
+2. **Sync sources are externalized to `sync.d/*.yml`** — adding/modifying a sync source means creating/editing a YAML file, not editing `sync.py`.
+3. Files in `luci-app-*/` and `luci-theme-*/` directories are **synced content** — modifications will be overwritten, new files will be deleted.
+4. Safe custom locations: `.github/`, `sync.d/`, `README.md`, `sync.py`, `sync.log`, `LICENSE`, `.gitignore`.
+5. `GLOBAL_PROTECTED` includes `.github` and `sync.d` — files there survive every sync.
 
-## Key Rules
+## Sync Sources (in sync.d/)
 
-1. **Do NOT modify files in synced directories** (`luci-app-*/`, `luci-theme-*/`). Changes will be overwritten or deleted by the next daily sync.
-2. **Safe locations**: `.github/`, `README.md`, `sync.py`, `sync.log`, `LICENSE`, `.gitignore`
-3. **To add a new sync source**: edit `SOURCES` in `sync.py`
-4. **To protect a custom file from sync deletion**: add its top-level directory to `protected` in `sync.py`
-5. **Sync runs daily at UTC 03:00** via GitHub Actions. Check `sync.log` for last run status.
-6. **SHA-based incremental sync**: files are compared by Git blob SHA. Only changed files are downloaded.
+| YAML File | Target |
+|-----------|--------|
+| `sync.d/luci-app-cloud-clipboard.yml` | `luci-app-cloud-clipboard/` |
+| `sync.d/luci-app-passwall.yml` | `luci-app-passwall/` |
+| `sync.d/luci-theme-aurora.yml` | `luci-theme-aurora/` |
+| `sync.d/luci-app-aurora-config.yml` | `luci-app-aurora-config/` |
 
-## Repository Structure
+To add a new sync source → create a new YAML file under `sync.d/`.
 
-| Directory | Type | Protected |
-|-----------|------|-----------|
-| `.github/` | Config (workflows, agent context) | ✅ Yes |
-| `luci-app-cloud-clipboard/` | Synced from `Jonnyan404/cloud-clipboard-go` | ❌ No |
-| `luci-app-passwall/` | Synced from `Openwrt-Passwall/openwrt-passwall` | ❌ No |
-| `luci-theme-aurora/` | Synced from `eamonxg/luci-theme-aurora` | ❌ No |
-| `luci-app-aurora-config/` | Synced from `eamonxg/luci-app-aurora-config` | ❌ No |
-| `sync.py` | Sync script | ✅ Yes |
-| `README.md` | Documentation | ✅ Yes |
-| `LICENSE` | License | ✅ Yes |
+## Before Making Changes
+
+1. **Read `.github/AGENT_CONTEXT.md` first** — it has the complete operating guide.
+2. Check recent sync status in `sync.log` or Actions.
+3. Confirm your change does not touch synced directories.
+
+## Repository Structure (abbreviated)
+
+```
+├── sync.py                          # Sync engine (protected)
+├── sync.d/*.yml                     # Per-target config (protected)
+├── .github/AGENT_CONTEXT.md         # Full agent handbook (protected)
+├── .github/copilot-instructions.md  # ← this file (protected)
+├── luci-app-*/  luci-theme-*/       # Synced from upstream (NOT modifiable)
+├── README.md, LICENSE               # Docs (protected)
+```

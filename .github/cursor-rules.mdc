@@ -1,28 +1,30 @@
 ---
-description: openwrt-packages-feed repository context for AI agents
+description: openwrt-packages-feed repository rules for AI agents (pointer)
 globs: ["**/*"]
 alwaysApply: true
 ---
 
-# Repository Context — openwrt-packages-feed
+# Repository Rules — openwrt-packages-feed
 
-> **Read `.github/AGENT_CONTEXT.md` for the full repository operation guide.**
+> **This file is a shortcut pointer.** The single authoritative source is **`.github/AGENT_CONTEXT.md`**. Read it for full details.
 
 ## Critical Rules
 
 1. This repo auto-syncs from upstream daily (UTC 03:00) via `sync.py` + GitHub Actions.
-2. Files in `luci-app-*/` and `luci-theme-*/` directories are **synced content** — modifications will be overwritten, new files will be deleted.
-3. Safe locations for custom content: `.github/`, `README.md`, `sync.py`, `sync.log`, `LICENSE`, `.gitignore`.
-4. To add sync sources: edit `SOURCES` in `sync.py`.
-5. To protect custom files from sync deletion: add top-level dir name to `protected` set in `sync.py`.
-6. Sync uses Git blob SHA for incremental comparison — only changed files are downloaded.
-7. Protected items: `.github`, `.git`, `.gitignore`, `sync.py`, `sync.log`, `README.md`, `LICENSE`.
+2. **Sync sources are externalized to `sync.d/*.yml`** — adding/modifying one means creating/editing a YAML file under `sync.d/`, NOT editing `sync.py`.
+3. Files in `luci-app-*/` and `luci-theme-*/` are **synced from upstream**:
+   - Modifications → overwritten on next sync when upstream changes
+   - New files → deleted on next sync
+4. Safe locations for custom content: `.github/`, `sync.d/`, `README.md`, `sync.py`, `sync.log`, `LICENSE`, `.gitignore`.
+5. To add a new sync source → create a YAML file in `sync.d/`. No code changes needed.
 
-## Sync Sources
+## Current Sync Sources (src → target)
 
-| Target | Upstream | Branch |
-|--------|----------|--------|
-| `luci-app-cloud-clipboard/` | `Jonnyan404/cloud-clipboard-go` | `main` |
-| `luci-app-passwall/` | `Openwrt-Passwall/openwrt-passwall` | `main` |
-| `luci-theme-aurora/` | `eamonxg/luci-theme-aurora` | `master` |
-| `luci-app-aurora-config/` | `eamonxg/luci-app-aurora-config` | `master` |
+- `sync.d/luci-app-cloud-clipboard.yml` → `luci-app-cloud-clipboard/`
+- `sync.d/luci-app-passwall.yml` → `luci-app-passwall/`
+- `sync.d/luci-theme-aurora.yml` → `luci-theme-aurora/`
+- `sync.d/luci-app-aurora-config.yml` → `luci-app-aurora-config/`
+
+## Protected Locations (never deleted by sync)
+
+`GLOBAL_PROTECTED = {".github", ".git", ".gitignore", "sync.py", "sync.log", "README.md", "LICENSE", "sync.d"}`
