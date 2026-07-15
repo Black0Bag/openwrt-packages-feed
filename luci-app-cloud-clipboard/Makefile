@@ -8,7 +8,7 @@ PKG_MAINTAINER:=jonnyan404
 PKG_LICENSE:=MIT
 
 LUCI_TITLE:=LuCI support for Cloud Clipboard
-LUCI_DEPENDS:=+luci-base +rpcd +luci-compat
+LUCI_DEPENDS:=+luci-base +cloud-clipboard +rpcd +luci-compat
 LUCI_PKGARCH:=all
 
 # 添加自定义安装目录
@@ -22,15 +22,6 @@ define Package/$(PKG_NAME)/install
     $(INSTALL_DIR) $(1)/usr/lib/lua/luci/view/cloud-clipboard
     $(INSTALL_DATA) ./luasrc/view/cloud-clipboard/*.htm $(1)/usr/lib/lua/luci/view/cloud-clipboard/
     
-    $(INSTALL_DIR) $(1)/etc/init.d
-    $(INSTALL_BIN) ./root/etc/init.d/cloud-clipboard $(1)/etc/init.d/
-
-    $(INSTALL_DIR) $(1)/etc/config
-    $(INSTALL_DATA) ./root/etc/config/cloud-clipboard $(1)/etc/config/
-
-    $(INSTALL_DIR) $(1)/usr/bin
-    $(INSTALL_BIN) ./root/usr/bin/cloud-clipboard $(1)/usr/bin/
-
     $(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
     $(INSTALL_DATA) ./root/usr/share/rpcd/acl.d/luci-app-cloud-clipboard.json $(1)/usr/share/rpcd/acl.d/
 endef
