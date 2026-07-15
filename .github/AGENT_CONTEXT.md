@@ -21,18 +21,25 @@
 
 ```
 openwrt-packages-feed/
-├── README.md                 # 仓库说明（受保护）
-├── LICENSE                   # 许可证（受保护）
-├── sync.py                   # 自动同步脚本（受保护）
-├── sync.log                  # 最近一次同步日志（受保护）
-├── .github/                  # GitHub 配置目录（整体受保护）
-│   ├── AGENT_CONTEXT.md      # ← 你正在阅读的文件
-│   ├── copilot-instructions.md  # GitHub Copilot 上下文
-│   └── cursor-rules.mdc      # Cursor / Windsurf rules
-├── luci-app-cloud-clipboard/ # 云剪贴板 LuCI 界面（上游同步）
-├── luci-app-passwall/        # PassWall 代理管理界面（上游同步）
-├── luci-theme-aurora/        # Aurora 主题（上游同步）
-└── luci-app-aurora-config/   # Aurora 主题配置应用（上游同步）
+├── README.md                           # 仓库说明（受保护）
+├── LICENSE                             # 许可证（受保护）
+├── sync.py                             # 自动同步脚本（受保护）
+├── sync.log                            # 最近一次同步日志（受保护）
+├── sync.d/                             # 同步源配置目录（受保护）
+│   ├── luci-app-cloud-clipboard.yml    # 云剪贴板同步规则
+│   ├── luci-app-passwall.yml           # PassWall 同步规则
+│   ├── luci-theme-aurora.yml           # Aurora 主题同步规则
+│   └── luci-app-aurora-config.yml      # Aurora 配置同步规则
+├── .github/                            # GitHub 配置目录（整体受保护）
+│   ├── AGENT_CONTEXT.md                # ← 你正在阅读的文件
+│   ├── copilot-instructions.md         # GitHub Copilot 上下文
+│   ├── cursor-rules.mdc                # Cursor / Windsurf rules
+│   └── workflows/
+│       └── autosync.yml                # GitHub Actions workflow
+├── luci-app-cloud-clipboard/           # 云剪贴板 LuCI 界面（上游同步）
+├── luci-app-passwall/                  # PassWall 代理管理界面（上游同步）
+├── luci-theme-aurora/                  # Aurora 主题（上游同步）
+└── luci-app-aurora-config/             # Aurora 主题配置应用（上游同步）
 ```
 
 ---
@@ -62,10 +69,11 @@ openwrt-packages-feed/
 
 ### Protected 列表（不会被同步删除）
 ```python
-protected = {".github", ".git", ".gitignore", "sync.py", "sync.log",
-             "README.md", "LICENSE"}
+GLOBAL_PROTECTED = {".github", ".git", ".gitignore", "sync.py", "sync.log",
+                     "README.md", "LICENSE", "sync.d"}
 ```
-> **`.github` 目录下的所有文件都受保护**，因为 sync.py 按顶级目录名匹配。
+> **`.github` 和 `sync.d` 目录下的所有文件都受保护**，因为 sync.py 按顶级目录名匹配。
+> 每个 YAML 配置还可以定义自己的 `protected` 列表用于保护该目录下的自定义文件。
 
 ### 对 Agent 操作的关键影响
 
@@ -103,18 +111,21 @@ protected = {".github", ".git", ".gitignore", "sync.py", "sync.log",
 - 在 `luci-app-passwall/` 下添加新文件（下次同步会删除）
 - 其他同步目录同上
 
-### 添加新同步源
-1. 编辑 `sync.py` 中的 `SOURCES` 列表，添加新条目
-2. 条目格式：
-   ```python
-   {
-       "source_repo": "作者/仓库名",
-       "source_path": "上游仓库中的路径（空字符串表示根目录）",
-       "target": "本仓库中的目标目录/",
-       "exclude": ["item1", "item2"],  # 可选，排除项列表
-   }
+### 添加或修改同步源
+1. 在 `sync.d/` 目录下创建新的 `.yml` 文件（如 `luci-app-example.yml`）
+2. 文件格式：
+   ```yaml
+   # 同步规则: luci-app-example
+   source_repo: "上游作者/仓库名"
+   source_path: "上游仓库中的路径（空字符串表示根目录）"
+   target: "本仓库中的目标目录/"
+   exclude: ["item1", "item2"]    # 可选，排除项列表
+   description: "描述信息"         # 可选，仅用于日志
+   branch: ""                     # 可选，空则自动获取上游默认分支
+   protected: ["my-custom-dir"]   # 可选，该源自定义的 protected 项
    ```
-3. 提交并推送，下次 workflow 运行时自动生效
+3. 提交并推送，下次 GitHub Actions 自动运行时生效
+4. 也可在 GitHub Actions 页面手动触发 workflow 立即测试
 
 ### 提交规范
 - Commit message 使用简洁英文或中文均可
@@ -128,6 +139,9 @@ protected = {".github", ".git", ".gitignore", "sync.py", "sync.log",
 | 项目 | 说明 |
 |------|------|
 | 同步策略 | Git Blob SHA 增量对比，仅下载变更文件 |
+| 配置来源 | `sync.d/*.yml`（优先），内置默认（回退） |
+| YAML 解析 | 优先用 PyYAML，不可用时用内置简易解析器 |
+| per-target protected | 每个 YAML 可定义 `protected` 列表保护自定义文件 |
 | API 容错 | 3 次重试 + 速率限制等待 + 30s 超时 |
 | Tree 截断 | 自动回退到 Contents API 逐目录遍历 |
 | 文件清理 | 同步后自动删除上游已移除的文件（protected 列表除外） |

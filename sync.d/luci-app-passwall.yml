@@ -1,0 +1,18 @@
+# 同步规则: luci-app-passwall
+# 上游: Openwrt-Passwall/openwrt-passwall
+# 说明: PassWall 代理管理界面
+#
+# 可配置字段:
+#   source_repo   - 上游仓库（必填）
+#   source_path   - 上游仓库中的路径，空字符串表示根目录
+#   target        - 本仓库中的目标目录（必填）
+#   exclude       - 排除的文件/目录列表（可选，按顶层名匹配）
+#   description   - 描述信息（可选，仅用于日志）
+#   branch        - 指定分支（可选，留空则自动获取上游默认分支）
+
+source_repo: "Openwrt-Passwall/openwrt-passwall"
+source_path: "luci-app-passwall"
+target: "luci-app-passwall/"
+exclude: []
+description: "PassWall 代理管理界面"
+branch: ""

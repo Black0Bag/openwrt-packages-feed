@@ -2,52 +2,178 @@
 """
 Auto-sync script for openwrt-packages-feed
 同步上游仓库指定目录到本仓库，支持增量更新、错误重试、日志输出。
+
+同步源配置从 sync.d/*.yml 加载，每个文件对应一个同步目标。
+如果 sync.d/ 目录不存在或没有配置文件，回退到内置默认配置。
 """
 
 import os
 import sys
 import json
 import time
+import glob
 import subprocess
 import base64
 from datetime import datetime, timezone
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 
+# ============ 同步源加载 ============
+
+def load_sources():
+    """
+    从 sync.d/ 目录加载同步源配置。
+    每个 *.yml 文件定义一个同步目标。
+    如果目录不存在或无配置文件，回退到内置默认。
+    """
+    config_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sync.d")
+    yml_files = sorted(glob.glob(os.path.join(config_dir, "*.yml")))
+
+    if not yml_files:
+        log("⚠️ sync.d/ 无配置文件，使用内置默认配置")
+        return _builtin_sources()
+
+    sources = []
+    for yml_path in yml_files:
+        name = os.path.basename(yml_path)
+        try:
+            src = _parse_yml(yml_path)
+            if src and "source_repo" in src and "target" in src:
+                src["_config_file"] = name
+                sources.append(src)
+                desc = src.get("description", "")
+                log(f"  📄 已加载: {name}" + (f" ({desc})" if desc else ""))
+            else:
+                log(f"  ⚠️ 跳过 {name}: 缺少 source_repo 或 target")
+        except Exception as e:
+            log(f"  ❌ 解析失败 {name}: {e}")
+
+    if not sources:
+        log("⚠️ 无有效配置，回退到内置默认")
+        return _builtin_sources()
+
+    return sources
+
+def _builtin_sources():
+    """内置默认配置（当 sync.d/ 不存在时使用）。"""
+    return [
+        {
+            "source_repo": "Jonnyan404/cloud-clipboard-go",
+            "source_path": "openwrt/luci-app-cloud-clipboard",
+            "target": "luci-app-cloud-clipboard/",
+        },
+        {
+            "source_repo": "Openwrt-Passwall/openwrt-passwall",
+            "source_path": "luci-app-passwall",
+            "target": "luci-app-passwall/",
+        },
+        {
+            "source_repo": "eamonxg/luci-theme-aurora",
+            "source_path": "",
+            "target": "luci-theme-aurora/",
+            "exclude": [
+                ".claude", ".dev", ".vscode", ".github", ".gitignore",
+                "CLAUDE.md", "README.md", "README_zh.md",
+            ],
+        },
+        {
+            "source_repo": "eamonxg/luci-app-aurora-config",
+            "source_path": "",
+            "target": "luci-app-aurora-config/",
+            "exclude": [
+                ".github", ".gitignore", "README.md", "README_zh.md",
+                "docs", "tests", "package.json",
+            ],
+        },
+    ]
+
+def _parse_yml(path: str) -> dict:
+    """
+    解析 YAML 配置文件。
+    优先使用 PyYAML；不可用时使用内置简易解析器。
+    支持的字段类型：字符串、列表、空值。
+    """
+    with open(path, "r", encoding="utf-8") as f:
+        text = f.read()
+
+    # 去掉注释行
+    lines = []
+    for line in text.splitlines():
+        stripped = line.lstrip()
+        if stripped.startswith("#"):
+            continue
+        lines.append(line)
+
+    try:
+        import yaml
+        return yaml.safe_load("\n".join(lines)) or {}
+    except ImportError:
+        return _simple_yaml_parse("\n".join(lines))
+
+def _simple_yaml_parse(text: str) -> dict:
+    """
+    内置简易 YAML 解析器（不依赖 PyYAML）。
+    仅支持本配置文件的语法子集：
+    - key: value（字符串）
+    - key: ""（空字符串）
+    - key:（列表，后续缩进的 - item）
+    - 注释行已在调用前去除
+    """
+    result = {}
+    lines = text.splitlines()
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if not line.strip():
+            i += 1
+            continue
+
+        # 检测列表字段
+        if ":" in line and not line.startswith(" ") and not line.startswith("-"):
+            key, _, value = line.partition(":")
+            key = key.strip()
+            value = value.strip()
+
+            if value == "" or value == '""' or value == '[]':
+                # 可能是空字符串或列表
+                # 检查下一行是否是列表项
+                list_items = []
+                j = i + 1
+                while j < len(lines) and lines[j].startswith("  - "):
+                    item = lines[j].strip()[2:].strip()
+                    # 去引号
+                    if item.startswith('"') and item.endswith('"'):
+                        item = item[1:-1]
+                    list_items.append(item)
+                    j += 1
+
+                if list_items or value == '[]':
+                    if value == '[]':
+                        result[key] = []
+                        i += 1
+                        continue
+                    result[key] = list_items
+                    i = j
+                else:
+                    result[key] = "" if value == '""' else value
+                    i += 1
+            else:
+                # 去引号
+                if value.startswith('"') and value.endswith('"'):
+                    value = value[1:-1]
+                result[key] = value
+                i += 1
+        else:
+            i += 1
+
+    return result
+
 # ============ 配置 ============
 GH_TOKEN = os.environ.get("GH_TOKEN", "")
 API_BASE = "https://api.github.com"
 
-SOURCES = [
-    {
-        "source_repo": "Jonnyan404/cloud-clipboard-go",
-        "source_path": "openwrt/luci-app-cloud-clipboard",
-        "target": "luci-app-cloud-clipboard/",
-    },
-    {
-        "source_repo": "Openwrt-Passwall/openwrt-passwall",
-        "source_path": "luci-app-passwall",
-        "target": "luci-app-passwall/",
-    },
-    {
-        "source_repo": "eamonxg/luci-theme-aurora",
-        "source_path": "",
-        "target": "luci-theme-aurora/",
-        "exclude": [
-            ".claude", ".dev", ".vscode", ".github", ".gitignore",
-            "CLAUDE.md", "README.md", "README_zh.md",
-        ],
-    },
-    {
-        "source_repo": "eamonxg/luci-app-aurora-config",
-        "source_path": "",
-        "target": "luci-app-aurora-config/",
-        "exclude": [
-            ".github", ".gitignore", "README.md", "README_zh.md",
-            "docs", "tests", "package.json",
-        ],
-    },
-]
+# Sources 延迟加载（需要先定义 log 函数）
+SOURCES = []
 
 API_TIMEOUT = 30
 MAX_RETRIES = 3
@@ -56,23 +182,19 @@ RETRY_DELAY = 5
 # ============ 日志 ============
 log_lines = []
 
-
 def log(msg: str):
     ts = datetime.now(timezone.utc).strftime("%H:%M:%S")
     line = f"[{ts}] {msg}"
     print(line, flush=True)
     log_lines.append(line)
 
-
 def flush_log():
     with open("sync.log", "w") as f:
         f.write("\n".join(log_lines) + "\n")
 
-
 # ============ HTTP 工具 ============
 class APIError(Exception):
     pass
-
 
 def api_get(url: str, raw: bool = False):
     """GET GitHub API with retry, return JSON or raw bytes."""
@@ -111,14 +233,12 @@ def api_get(url: str, raw: bool = False):
             time.sleep(RETRY_DELAY * attempt)
     raise APIError(f"API 调用失败 ({MAX_RETRIES} 次重试后): {url} | {last_err}")
 
-
 def get_default_branch(repo: str) -> str:
     """通过 /repos/{repo} 获取默认分支名。"""
     data = api_get(f"{API_BASE}/repos/{repo}")
     branch = data.get("default_branch", "main")
     log(f"  {repo} 默认分支: {branch}")
     return branch
-
 
 def fetch_tree(repo: str, branch: str, source_path: str, exclude: list = None) -> list:
     """
@@ -148,13 +268,11 @@ def fetch_tree(repo: str, branch: str, source_path: str, exclude: list = None) -
         + (f" (排除 {len(exclude)} 项)" if exclude else ""))
     return result
 
-
 def _is_excluded(path: str, source_path: str, exclude: list) -> bool:
     """检查文件是否在排除列表中（按顶层目录/文件名匹配）。"""
     rel = path[len(source_path):].lstrip("/") if source_path else path
     top = rel.split("/")[0]
     return top in exclude
-
 
 def _fetch_via_contents(repo: str, branch: str, path: str, exclude: list = None) -> list:
     """tree 截断时的回退方案，递归遍历 contents API。"""
@@ -190,7 +308,6 @@ def _fetch_via_contents(repo: str, branch: str, path: str, exclude: list = None)
     log(f"  {path or '(root)'}: {len(entries)} 个文件 (via contents API)")
     return entries
 
-
 # ============ Git 工具 ============
 def get_local_blob_shas() -> dict:
     """
@@ -213,7 +330,6 @@ def get_local_blob_shas() -> dict:
         shas[path] = sha
     return shas
 
-
 def git_rm_file(filepath: str):
     """安全删除文件。"""
     try:
@@ -228,19 +344,36 @@ def git_rm_file(filepath: str):
         except OSError:
             pass
 
-
 # ============ 同步主流程 ============
+
+# 全局 protected 集合（所有同步源共享）
+GLOBAL_PROTECTED = {".github", ".git", ".gitignore", "sync.py", "sync.log",
+                    "README.md", "LICENSE", "sync.d"}
+
 def sync_target(src: dict, local_shas: dict) -> tuple:
     """同步单个源。返回 (added, updated, deleted, errors)。"""
     repo = src["source_repo"]
-    source_path = src["source_path"]
+    source_path = src.get("source_path", "")
     target = src["target"]
     exclude = src.get("exclude", [])
+    custom_branch = src.get("branch", "")
+    description = src.get("description", "")
+    config_file = src.get("_config_file", "")
+    custom_protected = set(src.get("protected", []))
 
-    log(f"━━━ 同步: {repo}/{source_path or '(root)'} → {target} ━━━")
+    label = f"{repo}"
+    if config_file:
+        label += f" [{config_file}]"
+    log(f"━━━ 同步: {label}/{source_path or '(root)'} → {target} ━━━")
+    if description:
+        log(f"  描述: {description}")
 
-    # 1. 获取默认分支
-    branch = get_default_branch(repo)
+    # 1. 获取分支（优先使用配置指定的分支）
+    if custom_branch:
+        branch = custom_branch
+        log(f"  {repo} 指定分支: {branch}")
+    else:
+        branch = get_default_branch(repo)
 
     # 2. 获取源文件树
     remote_entries = fetch_tree(repo, branch, source_path, exclude)
@@ -296,8 +429,8 @@ def sync_target(src: dict, local_shas: dict) -> tuple:
 
     # 5. 清理目标目录中不再存在于源的文件
     deleted = 0
-    protected = {".github", ".git", ".gitignore", "sync.py", "sync.log",
-                 "README.md", "LICENSE"}
+    # 合并全局 protected + 该源自定义 protected
+    protected = GLOBAL_PROTECTED | custom_protected
 
     target_dir = target.rstrip("/")
     result = subprocess.run(
@@ -321,10 +454,14 @@ def sync_target(src: dict, local_shas: dict) -> tuple:
     log(f"  小计: +{added} ~{updated} -{deleted} 错误:{errors}")
     return added, updated, deleted, errors
 
-
 def main():
     log("=" * 60)
     log("Auto-sync 启动")
+
+    # 加载同步源配置
+    global SOURCES
+    log("━━━ 加载同步源配置 ━━━")
+    SOURCES = load_sources()
     log(f"源仓库数: {len(SOURCES)}")
 
     if not GH_TOKEN:
@@ -370,7 +507,6 @@ def main():
         log("✅ 所有文件已是最新")
 
     flush_log()
-
 
 if __name__ == "__main__":
     main()
