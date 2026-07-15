@@ -6,8 +6,8 @@ alwaysApply: true
 
 Read `.github/AGENT_CONTEXT.md` for full details. This file is a shortcut.
 
-1. Auto-syncs from upstream daily via sync.py + GitHub Actions.
-2. Sync sources: `sync.d/*.yml` (add new = create YAML, no code change).
+1. Auto-syncs from upstream daily via .tools/sync.py + GitHub Actions.
+2. Sync sources: `.tools/sync.d/*.yml` (add new = create YAML + optional hook, no code change).
 3. `luci-app-*/` `luci-theme-*/` = synced content. Mods get overwritten, new files get deleted.
-4. Safe: `.github/` `sync.d/` `README.md` `sync.py` `sync.log` `LICENSE` `.gitignore`.
-5. GLOBAL_PROTECTED: `.github .git .gitignore sync.py sync.log README.md LICENSE sync.d`
+4. Safe: `.github/` `.tools/` `README.md` `LICENSE` `.gitignore`.
+5. GLOBAL_PROTECTED: `.github .git .gitignore .tools README.md LICENSE`

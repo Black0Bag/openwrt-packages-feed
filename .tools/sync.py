@@ -3,8 +3,8 @@
 Auto-sync script for openwrt-packages-feed
 同步上游仓库指定目录到本仓库，支持增量更新、错误重试、日志输出。
 
-同步源配置从 sync.d/*.yml 加载，每个文件对应一个同步目标。
-如果 sync.d/ 目录不存在或没有配置文件，回退到内置默认配置。
+同步源配置从 .tools/sync.d/*.yml 加载，每个文件对应一个同步目标。
+如果 .tools/sync.d/ 目录不存在或没有配置文件，回退到内置默认配置。
 """
 
 import os
@@ -18,20 +18,29 @@ from datetime import datetime, timezone
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 
+# ============ 工具路径 ============
+
+TOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
+SYNC_D_DIR = os.path.join(TOOLS_DIR, "sync.d")
+LOG_FILE = os.path.join(TOOLS_DIR, "sync.log")
+
 # ============ 同步源加载 ============
 
 def load_sources():
     """
-    从 sync.d/ 目录加载同步源配置。
+    从 .tools/sync.d/ 目录加载同步源配置。
     每个 *.yml 文件定义一个同步目标。
     如果目录不存在或无配置文件，回退到内置默认。
     """
-    config_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sync.d")
+    config_dir = SYNC_D_DIR
     yml_files = sorted(glob.glob(os.path.join(config_dir, "*.yml")))
 
     if not yml_files:
-        log("⚠️ sync.d/ 无配置文件，使用内置默认配置")
+        log("⚠️ .tools/sync.d/ 无配置文件，使用内置默认配置")
         return _builtin_sources()
+
+    # 加载 .hook.sh 文件列表（用于日志，不用于匹配）
+    hook_files = set(glob.glob(os.path.join(config_dir, "*.hook.sh")))
 
     sources = []
     for yml_path in yml_files:
@@ -55,7 +64,7 @@ def load_sources():
     return sources
 
 def _builtin_sources():
-    """内置默认配置（当 sync.d/ 不存在时使用）。"""
+    """内置默认配置（当 .tools/sync.d/ 不存在时使用）。"""
     return [
         {
             "source_repo": "Jonnyan404/cloud-clipboard-go",
@@ -189,7 +198,7 @@ def log(msg: str):
     log_lines.append(line)
 
 def flush_log():
-    with open("sync.log", "w") as f:
+    with open(LOG_FILE, "w") as f:
         f.write("\n".join(log_lines) + "\n")
 
 # ============ HTTP 工具 ============
@@ -344,11 +353,21 @@ def git_rm_file(filepath: str):
         except OSError:
             pass
 
+def fetch_file_blob(repo: str, sha: str) -> bytes:
+    """通过 GitHub API 下载 blob 内容。"""
+    blob_url = f"{API_BASE}/repos/{repo}/git/blobs/{sha}"
+    blob_data = api_get(blob_url)
+    content = blob_data.get("content", "")
+    encoding = blob_data.get("encoding", "base64")
+    if encoding == "base64":
+        return base64.b64decode(content)
+    return content.encode("utf-8")
+
 # ============ 同步主流程 ============
 
 # 全局 protected 集合（所有同步源共享）
-GLOBAL_PROTECTED = {".github", ".git", ".gitignore", "sync.py", "sync.log",
-                    "README.md", "LICENSE", "sync.d"}
+GLOBAL_PROTECTED = {".github", ".git", ".gitignore", ".tools",
+                    "README.md", "LICENSE"}
 
 def sync_target(src: dict, local_shas: dict) -> tuple:
     """同步单个源。返回 (added, updated, deleted, errors)。"""
@@ -401,14 +420,7 @@ def sync_target(src: dict, local_shas: dict) -> tuple:
             continue
 
         try:
-            blob_url = f"{API_BASE}/repos/{repo}/git/blobs/{remote_sha}"
-            blob_data = api_get(blob_url)
-            content = blob_data.get("content", "")
-            encoding = blob_data.get("encoding", "base64")
-            if encoding == "base64":
-                file_bytes = base64.b64decode(content)
-            else:
-                file_bytes = content.encode("utf-8")
+            file_bytes = fetch_file_blob(repo, remote_sha)
 
             dir_path = os.path.dirname(local_path)
             if dir_path:
@@ -429,7 +441,6 @@ def sync_target(src: dict, local_shas: dict) -> tuple:
 
     # 5. 清理目标目录中不再存在于源的文件
     deleted = 0
-    # 合并全局 protected + 该源自定义 protected
     protected = GLOBAL_PROTECTED | custom_protected
 
     target_dir = target.rstrip("/")
@@ -444,12 +455,75 @@ def sync_target(src: dict, local_shas: dict) -> tuple:
 
     for f in existing_files:
         if f not in remote_local_map:
-            top = f.split("/")[0] if "/" in f else f
+            rel_to_target = f[len(target_dir):].lstrip("/") if target_dir and f.startswith(target_dir) else f
+            top = rel_to_target.split("/")[0] if "/" in rel_to_target else rel_to_target
             if top in protected:
                 continue
             git_rm_file(f)
             deleted += 1
             log(f"  - 删除: {f}")
+
+    # 5b. 处理 extra_files（扩展额外文件同步）
+    extra_files = src.get("extra_files", [])
+    for ef in extra_files:
+        ef_from = ef["from"]
+        ef_to = ef["to"]
+        try:
+            content_url = f"{API_BASE}/repos/{repo}/contents/{ef_from}?ref={branch}"
+            file_info = api_get(content_url)
+            ef_sha = file_info["sha"]
+
+            ef_local_sha = local_shas.get(ef_to)
+            if ef_local_sha == ef_sha:
+                continue
+
+            file_bytes = fetch_file_blob(repo, ef_sha)
+
+            dir_path = os.path.dirname(ef_to)
+            if dir_path:
+                os.makedirs(dir_path, exist_ok=True)
+
+            with open(ef_to, "wb") as f:
+                f.write(file_bytes)
+
+            if ef_local_sha is None:
+                added += 1
+                log(f"  + 新增 (extra): {ef_to}")
+            else:
+                updated += 1
+                log(f"  ~ 更新 (extra): {ef_to}")
+        except Exception as e:
+            errors += 1
+            log(f"  ❌ extra_file 下载失败: {ef_from} → {e}")
+
+    # 5c. 处理 post_sync hook
+    hooks = src.get("hooks", {})
+    if hooks.get("post_sync"):
+        hook_path = hooks["post_sync"]
+        if os.path.isfile(hook_path):
+            try:
+                hook_env = os.environ.copy()
+                hook_env.update({
+                    "SYNC_SOURCE_REPO": repo,
+                    "SYNC_TARGET": target,
+                    "SYNC_CONFIG_FILE": config_file,
+                })
+                result = subprocess.run(
+                    ["bash", hook_path],
+                    env=hook_env,
+                    cwd=".",
+                )
+                if result.returncode != 0:
+                    errors += 1
+                    log(f"  ❌ hook 执行失败 ({hook_path}): exit {result.returncode}")
+                else:
+                    log(f"  ✅ hook 执行成功 ({hook_path})")
+            except Exception as e:
+                errors += 1
+                log(f"  ❌ hook 异常 ({hook_path}): {e}")
+        else:
+            errors += 1
+            log(f"  ❌ hook 文件不存在: {hook_path}")
 
     log(f"  小计: +{added} ~{updated} -{deleted} 错误:{errors}")
     return added, updated, deleted, errors

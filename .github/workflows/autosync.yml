@@ -34,7 +34,7 @@ jobs:
           git config --global user.name "Auto Sync Bot"
           git config --global user.email "autosync@opencode.ai"
 
-          python3 sync.py
+          python3 .tools/sync.py
 
           if [ -n "$(git status --porcelain)" ]; then
             git add -A
@@ -51,5 +51,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sync-log
-          path: sync.log
+          path: .tools/sync.log
           retention-days: 7

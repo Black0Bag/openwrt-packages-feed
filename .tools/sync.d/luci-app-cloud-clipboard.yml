@@ -1,0 +1,33 @@
+# 同步配置: luci-app-cloud-clipboard
+# 来源: Jonnyan404/cloud-clipboard-go
+# 说明: cloud-clipboard-go LuCI 应用 + 服务文件 + 可执行文件
+#
+# 可用字段:
+#   source_repo   - 上游仓库（必填）
+#   source_path   - 上游仓库中的路径，"" 表示根目录
+#   target        - 本仓库中的目标目录（必填）
+#   exclude       - 排除的文件/目录列表（可选，按顶层名称匹配）
+#   description   - 描述信息（可选，显示在日志中）
+#   branch        - 指定分支（可选，留空自动获取上游默认分支）
+#   extra_files   - 额外同步的文件列表（可选）
+#     from        - 上游路径
+#     to          - 本仓库路径
+#   hooks         - 钩子（可选）
+#     post_sync   - 同步后执行的脚本路径
+#   protected     - 保护项（可选，不会被删除的顶层名称列表）
+
+source_repo: "Jonnyan404/cloud-clipboard-go"
+source_path: "openwrt/luci-app-cloud-clipboard"
+target: "luci-app-cloud-clipboard/"
+exclude: []
+extra_files:
+  - from: "openwrt/ipk/rootfs/etc/init.d/cloud-clipboard"
+    to: "luci-app-cloud-clipboard/root/etc/init.d/cloud-clipboard"
+  - from: "openwrt/ipk/rootfs/etc/config/cloud-clipboard"
+    to: "luci-app-cloud-clipboard/root/etc/config/cloud-clipboard"
+hooks:
+  post_sync: ".tools/sync.d/luci-app-cloud-clipboard.hook.sh"
+protected:
+  - "root"
+description: "cloud-clipboard-go: LuCI app + service files + binary"
+branch: ""
