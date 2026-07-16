@@ -14,6 +14,7 @@
 | **luci-app-passwall** | [Openwrt-Passwall/openwrt-passwall](https://github.com/Openwrt-Passwall/openwrt-passwall) | `sync.d/luci-app-passwall.yml` |
 | **luci-theme-aurora** | [eamonxg/luci-theme-aurora](https://github.com/eamonxg/luci-theme-aurora) | `sync.d/luci-theme-aurora.yml` |
 | **luci-app-aurora-config** | [eamonxg/luci-app-aurora-config](https://github.com/eamonxg/luci-app-aurora-config) | `sync.d/luci-app-aurora-config.yml` |
+| **luci-app-memos** | [Black0Bag/luci-app-memos](https://github.com/Black0Bag/luci-app-memos) | `sync.d/luci-app-memos.yml` |
 
 ## 使用方法
 
