@@ -1,0 +1,13 @@
+# 同步源: luci-app-memos
+# 来源: Black0Bag/luci-app-memos
+# 说明: LuCI support for Memos (usememos/memos)
+
+source_repo: "Black0Bag/luci-app-memos"
+source_path: ""
+target: "luci-app-memos/"
+exclude:
+  - ".github"
+  - ".gitignore"
+  - "README.md"
+description: "LuCI support for Memos, a self-hosted note-taking service"
+branch: ""
