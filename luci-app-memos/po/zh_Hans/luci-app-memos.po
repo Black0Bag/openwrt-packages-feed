@@ -1,0 +1,263 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+msgid "Memos"
+msgstr "Memos"
+
+msgid "Memos - Settings"
+msgstr "Memos - 设置"
+
+msgid "Overview"
+msgstr "概览"
+
+msgid "Settings"
+msgstr "设置"
+
+msgid "Self-hosted note-taking. Binary is fetched from upstream on demand."
+msgstr "自托管笔记服务。按需从上游下载二进制文件。"
+
+msgid "Settings are passed to the memos binary as command-line flags by the init script. Some options (driver, mirror, release channel) only affect how the package downloads or runs memos and are not memos CLI flags themselves."
+msgstr "由 init 脚本以命令行参数形式传递给 memos 二进制程序。部分选项（数据库驱动、镜像、发布通道）仅影响包的下载或运行方式，并非 memos 本身的 CLI 参数。"
+
+msgid "Service Status"
+msgstr "服务状态"
+
+msgid "Running"
+msgstr "运行中"
+
+msgid "Not running"
+msgstr "未运行"
+
+msgid "Downloading..."
+msgstr "下载中..."
+
+msgid "Binary missing"
+msgstr "二进制文件缺失"
+
+msgid "(service disabled)"
+msgstr "（服务已禁用）"
+
+msgid "Binary Path"
+msgstr "二进制文件路径"
+
+msgid "Local Version"
+msgstr "本地版本"
+
+msgid "not installed"
+msgstr "未安装"
+
+msgid "Remote Version"
+msgstr "远端版本"
+
+msgid "unavailable"
+msgstr "不可用"
+
+msgid "Binary Action"
+msgstr "二进制操作"
+
+msgid "Download binary"
+msgstr "下载二进制文件"
+
+msgid "Update to %s"
+msgstr "更新到 %s"
+
+msgid "Already up-to-date"
+msgstr "已是最新"
+
+msgid "Check again"
+msgstr "重新检查"
+
+msgid "Open Memos"
+msgstr "打开 Memos"
+
+msgid "Update Log"
+msgstr "更新日志"
+
+msgid "(no update running)"
+msgstr "（无正在进行的更新）"
+
+msgid "Checking..."
+msgstr "检查中..."
+
+msgid "Working..."
+msgstr "执行中..."
+
+msgid "General"
+msgstr "常规设置"
+
+msgid "Database"
+msgstr "数据库"
+
+msgid "Download Mirror"
+msgstr "下载镜像"
+
+msgid "Advanced"
+msgstr "高级设置"
+
+msgid "Enabled"
+msgstr "启用"
+
+msgid "Enable the memos service. When disabled, the init script will not start memos."
+msgstr "启用 memos 服务。禁用时 init 脚本不会启动 memos。"
+
+msgid "Listen address"
+msgstr "监听地址"
+
+msgid "Address the HTTP server binds to. Empty means all interfaces (0.0.0.0)."
+msgstr "HTTP 服务器绑定的地址。留空表示监听所有接口（0.0.0.0）。"
+
+msgid "Listen port"
+msgstr "监听端口"
+
+msgid "Port the HTTP server listens on. Overridden if a Unix socket is configured."
+msgstr "HTTP 服务器监听端口。配置了 Unix socket 时此设置无效。"
+
+msgid "Port must be a number between 1 and 65535."
+msgstr "端口必须是 1 到 65535 之间的数字。"
+
+msgid "Data directory"
+msgstr "数据目录"
+
+msgid "Where memos stores its SQLite database and uploaded attachments. Must be on a writable, persistent filesystem; data on a tmpfs will be lost on reboot."
+msgstr "memos 存储 SQLite 数据库和上传附件的位置。必须位于可写的持久化文件系统上；tmpfs 中的数据重启后会丢失。"
+
+msgid "Path must be absolute."
+msgstr "路径必须是绝对路径。"
+
+msgid "Binary path"
+msgstr "二进制文件路径"
+
+msgid "Where the downloaded memos binary is stored. Re-download via the Overview page."
+msgstr "下载的 memos 二进制文件的存储位置。可在概览页面重新下载。"
+
+msgid "Log level"
+msgstr "日志级别"
+
+msgid "Verbosity of the memos log output (sent to syslog by procd)."
+msgstr "memos 日志输出的详细程度（由 procd 发送到 syslog）。"
+
+msgid "Database driver"
+msgstr "数据库驱动"
+
+msgid "SQLite needs no extra packages and is the default for router scenarios."
+msgstr "SQLite 无需额外软件包，是路由器场景的默认选择。"
+
+msgid "SQLite (embedded, recommended)"
+msgstr "SQLite（内嵌，推荐）"
+
+msgid "MySQL / MariaDB"
+msgstr "MySQL / MariaDB"
+
+msgid "PostgreSQL"
+msgstr "PostgreSQL"
+
+msgid "DSN"
+msgstr "DSN"
+
+msgid "Database source name for the chosen driver. Required when driver is not SQLite. Example (MySQL): user:pass@tcp(127.0.0.1:3306)/memos?parseTime=true Example (Postgres): postgres://user:pass@127.0.0.1:5432/memos?sslmode=disable"
+msgstr "所选驱动的数据库源名称。当驱动不是 SQLite 时必填。示例（MySQL）：user:pass@tcp(127.0.0.1:3306)/memos?parseTime=true 示例（Postgres）：postgres://user:pass@127.0.0.1:5432/memos?sslmode=disable"
+
+msgid "Download mirror"
+msgstr "下载镜像"
+
+msgid "When GitHub is not reachable from your region, pick a mirror prefix to proxy download URLs and the releases API. Mirror availability is not guaranteed; switch to "Custom" to enter any working prefix if the built-in ones stop working."
+msgstr "当从您所在的区域无法访问 GitHub 时，选择一个镜像前缀来代理下载 URL 和 releases API。镜像可用性不保证；如果内置的镜像停止工作，请切换到「自定义」输入可用的前缀。"
+
+msgid "Official (direct GitHub)"
+msgstr "官方（直接 GitHub）"
+
+msgid "ghproxy.com"
+msgstr "ghproxy.com"
+
+msgid "gh-proxy.com"
+msgstr "gh-proxy.com"
+
+msgid "hub.gitmirror.com"
+msgstr "hub.gitmirror.com"
+
+msgid "github.moeyy.xyz"
+msgstr "github.moeyy.xyz"
+
+msgid "Custom"
+msgstr "自定义"
+
+msgid "Custom mirror prefix"
+msgstr "自定义镜像前缀"
+
+msgid "A prefix prepended to github.com URLs. Must end with "/". Leave empty to disable the custom prefix."
+msgstr "附加到 github.com URL 之前的前缀。必须以「/」结尾。留空表示不使用自定义前缀。"
+
+msgid "Must be a full URL ending with "/"."
+msgstr "必须是完整的 URL，并以「/」结尾。"
+
+msgid "Release channel"
+msgstr "发布通道"
+
+msgid "Stable points at the GitHub releases/latest endpoint (recommended). Beta pulls the newest release (including pre-releases) for those who want to test."
+msgstr "稳定版指向 GitHub releases/latest 端点（推荐）。测试版拉取最新版本（包括预发布版），适合想要尝鲜的用户。"
+
+msgid "Stable"
+msgstr "稳定版"
+
+msgid "Beta / pre-release"
+msgstr "测试版 / 预发布"
+
+msgid "Daily auto-update"
+msgstr "每日自动更新"
+
+msgid "Install a daily 3:30 AM cron job that runs memos.sh update. Only the memos binary is replaced; your data is untouched."
+msgstr "安装一个每天凌晨 3:30 执行的 cron 任务，运行 memos.sh update。仅替换 memos 二进制文件，不影响您的数据。"
+
+msgid "Instance URL"
+msgstr "实例 URL"
+
+msgid "Public URL of your memos instance, e.g. https://memos.example.com. Setting this enables the "public" access mode (anonymous read access)."
+msgstr "您的 memos 实例的公网 URL，例如 https://memos.example.com。设置此项会启用「公开」访问模式（匿名只读）。"
+
+msgid "Unix socket"
+msgstr "Unix socket"
+
+msgid "Path to a Unix socket; takes precedence over --addr and --port."
+msgstr "Unix socket 路径，优先级高于 --addr 和 --port。"
+
+msgid "Demo mode"
+msgstr "演示模式"
+
+msgid "Enable memos' built-in demo mode. Seeded data, intended for testing only."
+msgstr "启用 memos 内置的演示模式。包含预置示例数据，仅用于测试。"
+
+msgid "Private webhooks"
+msgstr "私有 webhook"
+
+msgid "Allow webhook URLs to resolve to private / reserved IP ranges. Off by default."
+msgstr "允许 webhook URL 解析到私有/保留 IP 地址段。默认关闭。"
+
+msgid "Run as user"
+msgstr "运行用户"
+
+msgid "Drop privileges to this user before exec. Empty = root. Make sure the data dir is writable by this user."
+msgstr "启动前降权到此用户。留空表示 root。请确保数据目录对该用户可写。"
+
+msgid "Run as group"
+msgstr "运行用户组"
+
+msgid "Drop privileges to this group before exec. Empty = root."
+msgstr "启动前降权到此用户组。留空表示 root。"
+
+msgid "GOGC"
+msgstr "GOGC"
+
+msgid "Go garbage-collector aggressiveness (heap growth percentage). Empty = unset/100."
+msgstr "Go 垃圾回收器激进程度（堆增长百分比）。留空表示未设置/100。"
+
+msgid "GOMAXPROCS"
+msgstr "GOMAXPROCS"
+
+msgid "Maximum number of OS threads for Go user code. Empty = match available CPUs."
+msgstr "Go 用户代码的最大操作系统线程数。留空表示匹配可用 CPU 数。"
+
+msgid "GOMEMLIMIT (MiB)"
+msgstr "GOMEMLIMIT（MiB）"
+
+msgid "Soft memory limit for the Go runtime in MiB. Empty = no limit."
+msgstr "Go 运行时的软内存限制（MiB）。留空表示无限制。"

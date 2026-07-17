@@ -1,0 +1,24 @@
+{
+	"luci-app-memos": {
+		"description": "Grant permissions for the Memos LuCI app",
+		"read": {
+			"ubus": {
+				"service": [ "list" ]
+			},
+			"uci": [ "memos" ]
+		},
+		"write": {
+			"file": {
+				"/usr/bin/memos version": [ "exec" ],
+				"/usr/share/memos/memos.sh check": [ "exec" ],
+				"/usr/share/memos/memos.sh download": [ "exec" ],
+				"/usr/share/memos/memos.sh update": [ "exec" ],
+				"/usr/share/memos/memos.sh cancel": [ "exec" ]
+			},
+			"ubus": {
+				"service": [ "list", "update_disabled" ]
+			},
+			"uci": [ "memos" ]
+		}
+	}
+}

@@ -348,8 +348,16 @@ function strToTable(str)
 	return loadstring("return " .. str)()
 end
 
-function is_timehhmm(timeStr)
-	local hour, minute = string.match(timeStr, "^(%d?%d):(%d%d)$")
+function is_json(str)
+	if str and jsonc.parse(str) then
+		return true
+	end
+	return false
+end
+datatypes.json = is_json
+
+function is_timehhmm(str)
+	local hour, minute = string.match(str, "^(%d?%d):(%d%d)$")
 	if hour and minute then
 		hour = tonumber(hour)
 		minute = tonumber(minute)
@@ -359,6 +367,7 @@ function is_timehhmm(timeStr)
 	end
 	return false
 end
+datatypes.timehhmm = is_timehhmm
 
 function is_normal_node(e)
 	if e and e.type and e.protocol and (e.protocol == "_balancing" or e.protocol == "_shunt" or e.protocol == "_iface" or e.protocol == "_urltest") then
@@ -1327,6 +1336,40 @@ function to_check_self()
 	}
 end
 
+function set_default_cbi()
+	local cbi = require "luci.cbi"
+	if true then
+		--TextValue
+		local TextValue = cbi.TextValue
+		local original_init = TextValue.__init__
+		function TextValue.__init__(self, ...)
+			original_init(self, ...)
+			self.template  = appname .. "/cbi/tvalue"
+		end
+	end
+end
+
+function return_map(map)
+	local cbi = require "luci.cbi"
+	local api = require "luci.passwall.api"
+	if true then
+		-- header
+		local header = cbi.Template(appname .. "/cbi/header")
+		header.api = api
+		header.config = map.config
+		table.insert(map.children, 1, header)
+	end
+	if true then
+		-- footer
+		local footer = cbi.Template(appname .. "/cbi/footer")
+		footer.api = api
+		footer.config = map.config
+		map:append(footer)
+	end
+
+	return map
+end
+
 function luci_types(id, m, s, type_name, option_prefix)
 	local fv_type
 	local field_type = s.fields["type"]
@@ -1498,9 +1541,6 @@ function set_apply_on_parse(map)
 			if old then old(self) end
 			map:set("@global[0]", "timestamp", os.time())
 		end
-		-- 优化页面
-		local cbi = require "luci.cbi"
-		map:append(cbi.Template(appname .. "/cbi/optimize_cbi_ui"))
 	end
 end
 

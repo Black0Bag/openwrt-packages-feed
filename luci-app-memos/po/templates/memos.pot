@@ -1,0 +1,263 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+msgid "Memos"
+msgstr ""
+
+msgid "Memos - Settings"
+msgstr ""
+
+msgid "Overview"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Self-hosted note-taking. Binary is fetched from upstream on demand."
+msgstr ""
+
+msgid "Settings are passed to the memos binary as command-line flags by the init script. Some options (driver, mirror, release channel) only affect how the package downloads or runs memos and are not memos CLI flags themselves."
+msgstr ""
+
+msgid "Service Status"
+msgstr ""
+
+msgid "Running"
+msgstr ""
+
+msgid "Not running"
+msgstr ""
+
+msgid "Downloading..."
+msgstr ""
+
+msgid "Binary missing"
+msgstr ""
+
+msgid "(service disabled)"
+msgstr ""
+
+msgid "Binary Path"
+msgstr ""
+
+msgid "Local Version"
+msgstr ""
+
+msgid "not installed"
+msgstr ""
+
+msgid "Remote Version"
+msgstr ""
+
+msgid "unavailable"
+msgstr ""
+
+msgid "Binary Action"
+msgstr ""
+
+msgid "Download binary"
+msgstr ""
+
+msgid "Update to %s"
+msgstr ""
+
+msgid "Already up-to-date"
+msgstr ""
+
+msgid "Check again"
+msgstr ""
+
+msgid "Open Memos"
+msgstr ""
+
+msgid "Update Log"
+msgstr ""
+
+msgid "(no update running)"
+msgstr ""
+
+msgid "Checking..."
+msgstr ""
+
+msgid "Working..."
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+msgid "Database"
+msgstr ""
+
+msgid "Download Mirror"
+msgstr ""
+
+msgid "Advanced"
+msgstr ""
+
+msgid "Enabled"
+msgstr ""
+
+msgid "Enable the memos service. When disabled, the init script will not start memos."
+msgstr ""
+
+msgid "Listen address"
+msgstr ""
+
+msgid "Address the HTTP server binds to. Empty means all interfaces (0.0.0.0)."
+msgstr ""
+
+msgid "Listen port"
+msgstr ""
+
+msgid "Port the HTTP server listens on. Overridden if a Unix socket is configured."
+msgstr ""
+
+msgid "Port must be a number between 1 and 65535."
+msgstr ""
+
+msgid "Data directory"
+msgstr ""
+
+msgid "Where memos stores its SQLite database and uploaded attachments. Must be on a writable, persistent filesystem; data on a tmpfs will be lost on reboot."
+msgstr ""
+
+msgid "Path must be absolute."
+msgstr ""
+
+msgid "Binary path"
+msgstr ""
+
+msgid "Where the downloaded memos binary is stored. Re-download via the Overview page."
+msgstr ""
+
+msgid "Log level"
+msgstr ""
+
+msgid "Verbosity of the memos log output (sent to syslog by procd)."
+msgstr ""
+
+msgid "Database driver"
+msgstr ""
+
+msgid "SQLite needs no extra packages and is the default for router scenarios."
+msgstr ""
+
+msgid "SQLite (embedded, recommended)"
+msgstr ""
+
+msgid "MySQL / MariaDB"
+msgstr ""
+
+msgid "PostgreSQL"
+msgstr ""
+
+msgid "DSN"
+msgstr ""
+
+msgid "Database source name for the chosen driver. Required when driver is not SQLite. Example (MySQL): user:pass@tcp(127.0.0.1:3306)/memos?parseTime=true Example (Postgres): postgres://user:pass@127.0.0.1:5432/memos?sslmode=disable"
+msgstr ""
+
+msgid "Download mirror"
+msgstr ""
+
+msgid "When GitHub is not reachable from your region, pick a mirror prefix to proxy download URLs and the releases API. Mirror availability is not guaranteed; switch to \"Custom\" to enter any working prefix if the built-in ones stop working."
+msgstr ""
+
+msgid "Official (direct GitHub)"
+msgstr ""
+
+msgid "ghproxy.com"
+msgstr ""
+
+msgid "gh-proxy.com"
+msgstr ""
+
+msgid "hub.gitmirror.com"
+msgstr ""
+
+msgid "github.moeyy.xyz"
+msgstr ""
+
+msgid "Custom"
+msgstr ""
+
+msgid "Custom mirror prefix"
+msgstr ""
+
+msgid "A prefix prepended to github.com URLs. Must end with \"/\". Leave empty to disable the custom prefix."
+msgstr ""
+
+msgid "Must be a full URL ending with \"/\"."
+msgstr ""
+
+msgid "Release channel"
+msgstr ""
+
+msgid "Stable points at the GitHub releases/latest endpoint (recommended). Beta pulls the newest release (including pre-releases) for those who want to test."
+msgstr ""
+
+msgid "Stable"
+msgstr ""
+
+msgid "Beta / pre-release"
+msgstr ""
+
+msgid "Daily auto-update"
+msgstr ""
+
+msgid "Install a daily 3:30 AM cron job that runs memos.sh update. Only the memos binary is replaced; your data is untouched."
+msgstr ""
+
+msgid "Instance URL"
+msgstr ""
+
+msgid "Public URL of your memos instance, e.g. https://memos.example.com. Setting this enables the \"public\" access mode (anonymous read access)."
+msgstr ""
+
+msgid "Unix socket"
+msgstr ""
+
+msgid "Path to a Unix socket; takes precedence over --addr and --port."
+msgstr ""
+
+msgid "Demo mode"
+msgstr ""
+
+msgid "Enable memos' built-in demo mode. Seeded data, intended for testing only."
+msgstr ""
+
+msgid "Private webhooks"
+msgstr ""
+
+msgid "Allow webhook URLs to resolve to private / reserved IP ranges. Off by default."
+msgstr ""
+
+msgid "Run as user"
+msgstr ""
+
+msgid "Drop privileges to this user before exec. Empty = root. Make sure the data dir is writable by this user."
+msgstr ""
+
+msgid "Run as group"
+msgstr ""
+
+msgid "Drop privileges to this group before exec. Empty = root."
+msgstr ""
+
+msgid "GOGC"
+msgstr ""
+
+msgid "Go garbage-collector aggressiveness (heap growth percentage). Empty = unset/100."
+msgstr ""
+
+msgid "GOMAXPROCS"
+msgstr ""
+
+msgid "Maximum number of OS threads for Go user code. Empty = match available CPUs."
+msgstr ""
+
+msgid "GOMEMLIMIT (MiB)"
+msgstr ""
+
+msgid "Soft memory limit for the Go runtime in MiB. Empty = no limit."
+msgstr ""

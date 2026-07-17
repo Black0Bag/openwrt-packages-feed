@@ -1,0 +1,15 @@
+#!/bin/sh
+
+[ -z "${IPKG_INSTROOT}" ] || exit 0
+
+# Create the default data directory so memos can write its SQLite DB on first boot.
+mkdir -p /etc/memos 2>/dev/null
+
+# Make sure the init script is registered with uci-track so config changes reload the service.
+uci -q get ucitrack.@memos[-1] >/dev/null 2>&1 || {
+	uci -q add ucitrack memos >/dev/null 2>&1
+	uci -q set ucitrack.@memos[-1].init=memos >/dev/null 2>&1
+	uci -q commit ucitrack >/dev/null 2>&1
+}
+
+exit 0
