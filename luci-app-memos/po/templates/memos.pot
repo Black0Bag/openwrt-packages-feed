@@ -1,16 +1,10 @@
 msgid ""
-msgstr "Content-Type: text/plain; charset=UTF-8"
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
 msgid "Memos"
 msgstr ""
 
 msgid "Memos - Settings"
-msgstr ""
-
-msgid "Overview"
-msgstr ""
-
-msgid "Settings"
 msgstr ""
 
 msgid "Self-hosted note-taking. Binary is fetched from upstream on demand."
@@ -26,9 +20,6 @@ msgid "Running"
 msgstr ""
 
 msgid "Not running"
-msgstr ""
-
-msgid "Downloading..."
 msgstr ""
 
 msgid "Binary missing"
@@ -52,6 +43,9 @@ msgstr ""
 msgid "unavailable"
 msgstr ""
 
+msgid "Architecture"
+msgstr ""
+
 msgid "Binary Action"
 msgstr ""
 
@@ -67,7 +61,13 @@ msgstr ""
 msgid "Check again"
 msgstr ""
 
+msgid "Cancel update"
+msgstr ""
+
 msgid "Open Memos"
+msgstr ""
+
+msgid "Unix socket mode — open via reverse proxy"
 msgstr ""
 
 msgid "Update Log"
@@ -80,6 +80,12 @@ msgid "Checking..."
 msgstr ""
 
 msgid "Working..."
+msgstr ""
+
+msgid "Cancelling..."
+msgstr ""
+
+msgid "Update failed. See the update log below."
 msgstr ""
 
 msgid "General"
@@ -110,9 +116,6 @@ msgid "Listen port"
 msgstr ""
 
 msgid "Port the HTTP server listens on. Overridden if a Unix socket is configured."
-msgstr ""
-
-msgid "Port must be a number between 1 and 65535."
 msgstr ""
 
 msgid "Data directory"
@@ -160,7 +163,7 @@ msgstr ""
 msgid "Download mirror"
 msgstr ""
 
-msgid "When GitHub is not reachable from your region, pick a mirror prefix to proxy download URLs and the releases API. Mirror availability is not guaranteed; switch to \"Custom\" to enter any working prefix if the built-in ones stop working."
+msgid "When GitHub is not reachable from your region, pick a mirror prefix to proxy binary download URLs. The GitHub API is always accessed directly. Mirror availability is not guaranteed; switch to \"Custom\" if the built-in ones stop working."
 msgstr ""
 
 msgid "Official (direct GitHub)"

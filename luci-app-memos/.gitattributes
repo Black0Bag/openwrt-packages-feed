@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: GPL-2.0-only
+# Force LF line endings on text files (OpenWrt shell scripts need LF shebang).
+
+* text=auto eol=lf
+
+*.sh  text eol=lf
+*.init text eol=lf
+Makefile text eol=lf
+*.json text eol=lf
+*.po   text eol=lf
+*.pot  text eol=lf
+*.js   text eol=lf
+*.md   text eol=lf
+
+# Binary artifacts if any added later
+*.gz binary

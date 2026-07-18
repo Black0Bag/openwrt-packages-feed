@@ -14,7 +14,7 @@
 		}
 	},
 	"admin/services/memos/overview": {
-		"title": "Overview",
+		"title": "概览",
 		"order": 10,
 		"action": {
 			"type": "view",
@@ -22,7 +22,7 @@
 		}
 	},
 	"admin/services/memos/settings": {
-		"title": "Settings",
+		"title": "设置",
 		"order": 20,
 		"action": {
 			"type": "view",
