@@ -154,8 +154,7 @@ function gen_outbound(flag, node, tag, proxy_table)
 						MaxConcurrentTry = 4
 					} or nil
 				},
-				network = (api.compare_versions(xray_version, "<", "26.7.11")) and node.transport or nil, -- Todo: Remove
-				method = (api.compare_versions(xray_version, ">=", "26.7.11")) and node.transport or nil, -- Todo: Remove version check
+				[(api.compare_versions(xray_version, "<", "26.7.11")) and "network" or "method"] = node.transport, -- Todo: Remove version check and "network"
 				security = node.stream_security,
 				tlsSettings = (node.stream_security == "tls") and {
 					serverName = node.tls_serverName,
@@ -646,8 +645,7 @@ function gen_config_server(node)
 				protocol = node.protocol,
 				settings = settings,
 				streamSettings = {
-					network = (api.compare_versions(xray_version, "<", "26.7.11")) and node.transport or nil, -- Todo: Remove
-					method = (api.compare_versions(xray_version, ">=", "26.7.11")) and node.transport or nil, -- Todo: Remove version check
+					[(api.compare_versions(xray_version, "<", "26.7.11")) and "network" or "method"] = node.transport, -- Todo: Remove version check and "network"
 					security = "none",
 					tlsSettings = ("1" == node.tls) and {
 						disableSystemRoot = false,
@@ -1051,7 +1049,7 @@ function gen_config(var)
 
 			api.log("  - 加载 Xray 负载均衡 节点【" .. (_node.remarks or "") .. "】，子节点数量：" .. #(blc_nodes or {}))
 
-			local valid_nodes = {}
+			local valid_nodes, valid_fallback = {}, true
 			for i = 1, #(blc_nodes or {}) do
 				local blc_node_id = blc_nodes[i]
 				local blc_node_tag = "blc-" .. blc_node_id
@@ -1069,12 +1067,16 @@ function gen_config(var)
 						valid_nodes[#valid_nodes + 1] = outboundTag
 					end
 				end
+				-- Check if balancing node duplicates fallback node
+				if _node.fallback_node == blc_node_id then
+					valid_fallback = false
+				end
 			end
 			if #valid_nodes == 0 then return nil end
 
 			-- fallback node
 			local fallback_node_id = _node.fallback_node
-			fallback_node_id = (fallback_node_id and fallback_node_id ~= "") and fallback_node_id or nil
+			fallback_node_id = (valid_fallback and fallback_node_id and fallback_node_id ~= "") and fallback_node_id or nil
 			local fallback_node_tag = (fallback_node_id == "_direct") and "direct" or "blackhole"
 			if fallback_node_id and fallback_node_id ~= "_direct" then
 				local is_new_node = true
