@@ -53,6 +53,9 @@ if singbox_tags:find("with_quic") then
 	o:value("hysteria2", "Hysteria2")
 end
 o:value("anytls", "AnyTLS")
+if singbox_tags:find("with_wireguard") then
+	o:value("wireguard", "WireGuard")
+end
 o:value("direct", "Direct")
 o:depends({ [_n("custom")] = false })
 
@@ -60,35 +63,28 @@ o = s:option(Value, _n("port"), translate("Listen Port"))
 o.datatype = "port"
 o:depends({ [_n("custom")] = false })
 
-o = s:option(Flag, _n("auth"), translate("Auth"))
-o.validate = function(self, value, t)
-	if value and value == "1" then
-		local user_v = s.fields[_n("username")] and s.fields[_n("username")]:formvalue(t) or ""
-		local pass_v = s.fields[_n("password")] and s.fields[_n("password")]:formvalue(t) or ""
-		if user_v == "" or pass_v == "" then
-			return nil, translate("Username and Password must be used together!")
-		end
-	end
-	return value
+o = s:option(DynamicList, _n("users"), translate("User"))
+for i, v in ipairs(user_list) do
+	o:value(v[".name"], v.username)
 end
 o:depends({ [_n("protocol")] = "mixed" })
 o:depends({ [_n("protocol")] = "socks" })
 o:depends({ [_n("protocol")] = "http" })
-
-o = s:option(Value, _n("username"), translate("Username"))
-o:depends({ [_n("auth")] = true })
-o:depends({ [_n("protocol")] = "naive" })
-o:depends({ [_n("protocol")] = "anytls" })
-
-o = s:option(Value, _n("password"), translate("Password"))
-o.password = true
-o:depends({ [_n("auth")] = true })
 o:depends({ [_n("protocol")] = "shadowsocks" })
+o:depends({ [_n("protocol")] = "vmess" })
+o:depends({ [_n("protocol")] = "vless" })
+o:depends({ [_n("protocol")] = "trojan" })
 o:depends({ [_n("protocol")] = "naive" })
+o:depends({ [_n("protocol")] = "hysteria" })
 o:depends({ [_n("protocol")] = "tuic" })
+o:depends({ [_n("protocol")] = "hysteria2" })
 o:depends({ [_n("protocol")] = "anytls" })
+o:depends({ [_n("protocol")] = "wireguard" })
 
 if singbox_tags:find("with_quic") then
+	o = s:option(Value, _n("hysteria_obfs"), translate("Obfs Password"))
+	o:depends({ [_n("protocol")] = "hysteria" })
+
 	o = s:option(Value, _n("hysteria_up_mbps"), translate("Max upload Mbps"))
 	o.default = "100"
 	o:depends({ [_n("protocol")] = "hysteria" })
@@ -96,20 +92,6 @@ if singbox_tags:find("with_quic") then
 	o = s:option(Value, _n("hysteria_down_mbps"), translate("Max download Mbps"))
 	o.default = "100"
 	o:depends({ [_n("protocol")] = "hysteria" })
-
-	o = s:option(Value, _n("hysteria_obfs"), translate("Obfs Password"))
-	o:depends({ [_n("protocol")] = "hysteria" })
-
-	o = s:option(ListValue, _n("hysteria_auth_type"), translate("Auth Type"))
-	o:value("disable", translate("Disable"))
-	o:value("string", translate("STRING"))
-	o:value("base64", translate("BASE64"))
-	o:depends({ [_n("protocol")] = "hysteria" })
-
-	o = s:option(Value, _n("hysteria_auth_password"), translate("Auth Password"))
-	o.password = true
-	o:depends({ [_n("protocol")] = "hysteria", [_n("hysteria_auth_type")] = "string"})
-	o:depends({ [_n("protocol")] = "hysteria", [_n("hysteria_auth_type")] = "base64"})
 
 	o = s:option(Value, _n("hysteria_recv_window_conn"), translate("QUIC stream receive window"))
 	o:depends({ [_n("protocol")] = "hysteria" })
@@ -174,10 +156,6 @@ if singbox_tags:find("with_quic") then
 	o.default = { "stun.sip.us:3478", "stun.nextcloud.com:3478", "global.stun.twilio.com:3478" }
 	o:depends({ [_n("hysteria2_realms")] = "1" })
 
-	o = s:option(Value, _n("hysteria2_auth_password"), translate("Auth Password"))
-	o.password = true
-	o:depends({ [_n("protocol")] = "hysteria2"})
-
 	o = s:option(ListValue, _n("hysteria2_obfs_type"), translate("Obfs Type"))
 	o:value("", translate("Disable"))
 	o:value("salamander")
@@ -233,14 +211,8 @@ o.rewrite_option = "method"
 for a, t in ipairs(ss_method_list) do o:value(t) end
 o:depends({ [_n("protocol")] = "shadowsocks" })
 
-o = s:option(DynamicList, _n("uuid"), translate("ID") .. "/" .. translate("Password"))
-for i = 1, 3 do
-	o:value(api.gen_uuid(1))
-end
-o:depends({ [_n("protocol")] = "vmess" })
-o:depends({ [_n("protocol")] = "vless" })
-o:depends({ [_n("protocol")] = "trojan" })
-o:depends({ [_n("protocol")] = "tuic" })
+o = s:option(Value, _n("ss_password"), translate("Password"))
+o:depends({ [_n("protocol")] = "shadowsocks" })
 
 o = s:option(ListValue, _n("flow"), translate("flow"))
 o.default = ""
@@ -432,6 +404,32 @@ o = s:option(Value, _n("tcpbrutal_down_mbps"), translate("Max download Mbps"))
 o.default = "50"
 o:depends({ [_n("tcpbrutal")] = true })
 
+if singbox_tags:find("with_wireguard") then
+	o = s:option(Flag, _n("wireguard_system_interface"), translate("System interface"))
+	o.default = 0
+	o:depends({ [_n("protocol")] = "wireguard" })
+
+	o = s:option(Value, _n("wireguard_mtu"), "MTU")
+	o.default = "1408"
+	o:depends({ [_n("protocol")] = "wireguard" })
+
+	o = s:option(DynamicList, _n("wireguard_local_address"), translate("Local Address"))
+	o:depends({ [_n("protocol")] = "wireguard" })
+
+	o = s:option(Value, _n("wireguard_private_key"), translate("Private Key"))
+	o.datatype = "base64"
+	o:depends({ [_n("protocol")] = "wireguard" })
+
+	o = s:option(Value, _n("wireguard_public_key"), translate("Public Key"))
+	o.datatype = "base64"
+	o:depends({ [_n("protocol")] = "wireguard" })
+
+	o = s:option(DummyValue, _n("gen_wireguard_key"))
+	o.prefix = option_prefix
+	o.template = m:template_path("/server/server_wireguard")
+	o:depends({ [_n("protocol")] = "wireguard" })
+end
+
 o = s:option(Flag, _n("bind_local"), translate("Bind Local"), translate("When selected, it can only be accessed localhost."))
 o.default = "0"
 o:depends({ [_n("custom")] = false })
@@ -456,7 +454,7 @@ o:value("", translate("Close"))
 o:value("_socks", translate("Custom Socks"))
 o:value("_http", translate("Custom HTTP"))
 o:value("_iface", translate("Custom Interface"))
-o.template = api.appname .. "/cbi/nodes_listvalue"
+o.template = m:template_path("/cbi/nodes_listvalue")
 o.group = {"","","",""}
 for k, v in pairs(nodes_table) do
 	o:value(v.id, v.remarks)

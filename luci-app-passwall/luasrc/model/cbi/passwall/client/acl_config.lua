@@ -1,25 +1,20 @@
 local api = require "luci.passwall.api"
-local appname = "passwall"
-
 api.set_default_cbi()
 
-m = Map(appname)
+m = Map()
 m.redirect = api.url("acl")
-api.set_apply_on_parse(m)
 
 if not arg[1] or not m:get(arg[1]) then
 	luci.http.redirect(m.redirect)
 end
 
-m:append(Template(appname .. "/cbi/nodes_listvalue_com"))
+m:appendTemplate("/cbi/nodes_listvalue_com")
 
-local fs = api.fs
-local sys = api.sys
 local has_singbox = api.finded_com("sing-box")
 local has_xray = api.finded_com("xray")
-local has_gfwlist = fs.access("/usr/share/passwall/rules/gfwlist")
-local has_chnlist = fs.access("/usr/share/passwall/rules/chnlist")
-local has_chnroute = fs.access("/usr/share/passwall/rules/chnroute")
+local has_gfwlist = api.fs.access("/usr/share/passwall/rules/gfwlist")
+local has_chnlist = api.fs.access("/usr/share/passwall/rules/chnlist")
+local has_chnroute = api.fs.access("/usr/share/passwall/rules/chnroute")
 
 local port_validate = function(self, value, t)
 	return value:gsub("-", ":")
@@ -38,35 +33,15 @@ for _, v in pairs(nodes_table) do
 end
 
 local socks_list = {}
-m.uci:foreach(appname, "socks", function(s)
+m:foreach("socks", function(s)
 	if s.enabled == "1" and s.node then
 		socks_list[#socks_list + 1] = {
-			id = "Socks_" .. s[".name"],
+			id = s[".name"],
 			remark = translate("Socks Config") .. " " .. string.format("[%s %s]", s.port, translate("Port")),
 			group = "Socks"
 		}
 	end
 end)
-
-local dynamicList_write = function(self, section, value)
-	local t = {}
-	local t2 = {}
-	if type(value) == "table" then
-		local x
-		for _, x in ipairs(value) do
-			if x and #x > 0 then
-				if not t2[x] then
-					t2[x] = x
-					t[#t+1] = x
-				end
-			end
-		end
-	else
-		t = { value }
-	end
-	t = table.concat(t, " ")
-	return DynamicList.write(self, section, t)
-end
 
 -- [[ ACLs Settings ]]--
 s = m:section(NamedSection, arg[1], translate("ACLs"), translate("ACLs"))
@@ -97,7 +72,7 @@ o.validate = function(self, value, section)
 end
 
 local mac_t = {}
-sys.net.mac_hints(function(e, t)
+api.sys.net.mac_hints(function(e, t)
 	mac_t[#mac_t + 1] = {
 		ip = t,
 		mac = e
@@ -180,7 +155,10 @@ sources.validate = function(self, value, t)
 
 	return value
 end
-sources.write = dynamicList_write
+
+o = s:option(ListValue, "mode", translate("Mode"))
+o:value("0", translate("No Proxy"))
+o:value("1", translate("Proxy"))
 
 ---- TCP No Redir Ports
 local TCP_NO_REDIR_PORTS = m:get("@global_forwarding[0]", "tcp_no_redir_ports")
@@ -188,6 +166,7 @@ o = s:option(Value, "tcp_no_redir_ports", translate("TCP No Redir Ports"))
 o:value("", translate("Use global config") .. "(" .. TCP_NO_REDIR_PORTS .. ")")
 o:value("disable", translate("No patterns are used"))
 o:value("1:65535", translate("All"))
+o:depends("mode", "1")
 o.validate = port_validate
 
 ---- UDP No Redir Ports
@@ -199,11 +178,13 @@ o = s:option(Value, "udp_no_redir_ports", translate("UDP No Redir Ports"),
 o:value("", translate("Use global config") .. "(" .. UDP_NO_REDIR_PORTS .. ")")
 o:value("disable", translate("No patterns are used"))
 o:value("1:65535", translate("All"))
+o:depends("mode", "1")
 o.validate = port_validate
 
 o = s:option(DummyValue, "_hide_node_option", "")
-o.template = "passwall/cbi/hidevalue"
+o.template = m:template_path("/cbi/hidevalue")
 o.value = "1"
+o:depends("mode", "0")
 o:depends({ tcp_no_redir_ports = "1:65535", udp_no_redir_ports = "1:65535" })
 if TCP_NO_REDIR_PORTS == "1:65535" and UDP_NO_REDIR_PORTS == "1:65535" then
 	o:depends({ tcp_no_redir_ports = "", udp_no_redir_ports = "" })
@@ -217,7 +198,7 @@ o:depends({ _hide_node_option = "1",  ['!reverse'] = true })
 o = s:option(ListValue, "tcp_node", "<a style='color: red'>" .. translate("TCP Node") .. "</a>")
 o.default = ""
 o:depends({ _hide_node_option = false, use_global_config = false })
-o.template = appname .. "/cbi/nodes_listvalue"
+o.template = m:template_path("/cbi/nodes_listvalue")
 o.group = {}
 o.remove = function(self, section)
 	m:del(section, self.option)
@@ -225,7 +206,7 @@ o.remove = function(self, section)
 end
 
 o = s:option(DummyValue, "_tcp_node_bool", "")
-o.template = "passwall/cbi/hidevalue"
+o.template = m:template_path("/cbi/hidevalue")
 o.value = "1"
 o:depends({ tcp_node = "",  ['!reverse'] = true })
 
@@ -234,12 +215,14 @@ o.default = ""
 o:value("", translate("Close"))
 o:value("tcp", translate("Same as the tcp node"))
 o:depends({ _tcp_node_bool = "1", _node_sel_other = "1" })
-o.template = appname .. "/cbi/nodes_listvalue"
+o.template = m:template_path("/cbi/nodes_listvalue")
 o.group = {"",""}
 o.remove = function(self, section)
 	local v = s.fields["shunt_udp_node"]:formvalue(section)
-	if not v then
+	if not v or v == "close" then
 		return m:del(section, self.option)
+	else
+		return m:set(section, self.option, "tcp")
 	end
 end
 
@@ -259,10 +242,24 @@ o.write = function(self, section, value)
 end
 
 o = s:option(DummyValue, "_udp_node_bool", "")
-o.template = "passwall/cbi/hidevalue"
+o.template = m:template_path("/cbi/hidevalue")
 o.value = "1"
 o:depends({ udp_node = "",  ['!reverse'] = true })
 o:depends({ shunt_udp_node = "tcp" })
+
+---- Log
+o = s:option(Flag, "log", translate("Enable Node Log"))
+o.default = 0
+o.rmempty = false
+o:depends({ _hide_node_option = false, use_global_config = false })
+
+o = s:option(ListValue, "loglevel", "Sing-Box/Xray " .. translate("Log Level"))
+o.default = "warn"
+o:value("debug", "Debug")
+o:value("info", "Info")
+o:value("warn", "Warning")
+o:value("error", "Error")
+o:depends("log", "1")
 
 ---- TCP Proxy Drop Ports
 local TCP_PROXY_DROP_PORTS = m:get("@global_forwarding[0]", "tcp_proxy_drop_ports")
@@ -352,17 +349,17 @@ o:value("proxy", translate("Proxy"))
 o:depends({ _udp_node_bool = "1" })
 
 o = s:option(DummyValue, "switch_mode", " ")
-o.template = appname .. "/global/proxy"
+o.template = m:template_path("/global/proxy")
 o:depends({ _tcp_node_bool = "1" })
 
 -- Node → DNS Depends Settings
 o = s:option(DummyValue, "_node_sel_shunt", "")
-o.template = appname .. "/cbi/hidevalue"
+o.template = m:template_path("/cbi/hidevalue")
 o.value = "1"
 o:depends({ tcp_node = "__always__" })
 
 o = s:option(DummyValue, "_node_sel_other", "")
-o.template = appname .. "/cbi/hidevalue"
+o.template = m:template_path("/cbi/hidevalue")
 o.value = "1"
 o:depends({ _node_sel_shunt = "1",  ['!reverse'] = true })
 
@@ -372,9 +369,6 @@ o.default = "chinadns-ng"
 o:value("dnsmasq", "Dnsmasq")
 o:value("chinadns-ng", translate("ChinaDNS-NG (recommended)"))
 o:depends({ _tcp_node_bool = "1" })
-
-o = s:option(DummyValue, "view_chinadns_log", " ")
-o.template = appname .. "/acl/view_chinadns_log"
 
 o = s:option(Flag, "filter_proxy_ipv6", translate("Filter Proxy Host IPv6"), translate("Experimental feature."))
 o.default = "0"
@@ -525,13 +519,18 @@ o.validate = function(self, value, t)
 		local _dns_mode = s.fields["dns_mode"]:formvalue(t)
 		local _tcp_node = s.fields["tcp_node"]:formvalue(t)
 		if _dns_mode and _tcp_node then
-			if (m:get(_tcp_node, "type") or ""):lower() ~= _dns_mode and not _tcp_node:find("Socks_") then
+			if (m:get(_tcp_node, "type") or ""):lower() ~= _dns_mode and not _tcp_node:find("socks_") then
 				return nil, translatef("TCP node must be '%s' type to use FakeDNS.", _dns_mode)
 			end
 		end
 	end
 	return value
 end
+
+o = s:option(Value, "remote_rewrite_ttl", translate("Remote DNS") .. " TTL")
+o.datatype = "min(1)"
+o.default = "30"
+o:depends({dns_mode = "sing-box"})
 
 o = s:option(ListValue, "chinadns_ng_default_tag", translate("Default DNS"))
 o.default = "none"
@@ -594,6 +593,7 @@ for k, v in pairs(nodes_table) do
 
 			s.fields["singbox_dns_mode"]:depends({ _tcp_node_bool = "1", tcp_node = v.id })
 			s.fields["_node_sel_shunt"]:depends({ tcp_node = v.id })
+			s.fields["remote_rewrite_ttl"]:depends({ _tcp_node_bool = "1", tcp_node = v.id })
 		end
 	else
 		tcp:value(v.id, v["remark"])
@@ -602,5 +602,7 @@ for k, v in pairs(nodes_table) do
 		udp.group[#udp.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 	end
 end
+
+m:appendTemplate("/acl/config_footer", {section = arg[1]})
 
 return api.return_map(m)

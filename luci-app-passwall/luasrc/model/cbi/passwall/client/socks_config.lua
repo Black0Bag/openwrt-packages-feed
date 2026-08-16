@@ -1,18 +1,15 @@
 local api = require "luci.passwall.api"
-local appname = "passwall"
-
 api.set_default_cbi()
 
-m = Map(appname)
+m = Map()
 m.redirect = api.url()
-api.set_apply_on_parse(m)
 
 if not arg[1] or not m:get(arg[1]) then
 	luci.http.redirect(m.redirect)
 end
 
-m:append(Template(appname .. "/cbi/nodes_dynamiclist_com"))
-m:append(Template(appname .. "/cbi/nodes_listvalue_com"))
+m:appendTemplate("/cbi/nodes_dynamiclist_com")
+m:appendTemplate("/cbi/nodes_listvalue_com")
 
 local has_singbox = api.finded_com("sing-box")
 local has_xray = api.finded_com("xray")
@@ -32,7 +29,7 @@ o.default = 1
 o.rmempty = false
 
 local auto_switch_tip
-local current_node = api.get_cache_var("socks_" .. arg[1])
+local current_node = api.get_cache_var(arg[1])
 if current_node then
 	local n = m:get(current_node)
 	if n then
@@ -50,14 +47,14 @@ socks_node = s:option(ListValue, "node", translate("Node"))
 if auto_switch_tip then
 	socks_node.description = auto_switch_tip
 end
-socks_node.template = appname .. "/cbi/nodes_listvalue"
+socks_node.template = m:template_path("/cbi/nodes_listvalue")
 socks_node.group = {}
 
 o = s:option(Flag, "bind_local", translate("Bind Local"), translate("When selected, it can only be accessed localhost."))
 o.default = "0"
 
 local n = 1
-m.uci:foreach(appname, "socks", function(s)
+m:foreach("socks", function(s)
 	if s[".name"] == section then
 		return false
 	end
@@ -91,7 +88,7 @@ o:value("batch", translate("Batch"))
 
 o = s:option(DynamicList, "autoswitch_backup_node", translate("List of backup nodes"))
 o:depends("backup_node_add_mode", "manual")
-o.template = appname .. "/cbi/nodes_dynamiclist"
+o.template = m:template_path("/cbi/nodes_dynamiclist")
 o.group = {}
 o.write = function(self, section, value)
 	local n = s.fields["node"]:formvalue(section)
@@ -117,7 +114,7 @@ o:depends("backup_node_add_mode", "batch")
 o.widget = "checkbox"
 o:value("default", translate("default"))
 local groups = {}
-m.uci:foreach(appname, "nodes", function(s)
+m:foreach("nodes", function(s)
 	if s.group and s.group ~= "" then
 		groups[s.group] = true
 	end
@@ -141,16 +138,16 @@ o.default = 30
 o:depends("enable_autoswitch", true)
 
 o = s:option(Value, "autoswitch_connect_timeout", translate("Timeout seconds"), translate("Units:seconds"))
-o.datatype = "min(1)"
+o.datatype = "range(3,10)"
 o.default = 3
 o:depends("enable_autoswitch", true)
 
 o = s:option(Value, "autoswitch_retry_num", translate("Timeout retry num"))
-o.datatype = "min(1)"
+o.datatype = "range(1,5)"
 o.default = 1
 o:depends("enable_autoswitch", true)
 	
-o = s:option(Flag, "autoswitch_restore_switch", translate("Restore Switch"), translate("When detects main node is available, switch back to the main node."))
+o = s:option(Flag, "autoswitch_restore_switch", translate("Restore Switch"), translate("Immediately switch back to the main node when it becomes available."))
 o:depends("enable_autoswitch", true)
 
 o = s:option(Value, "autoswitch_probe_url", translate("Probe URL"), translate("The URL used to detect the connection status."))
@@ -165,7 +162,7 @@ o.default = o.keylist[3]
 o:depends("enable_autoswitch", true)
 
 o = s:option(DummyValue, "btn")
-o.template = appname .. "/socks_auto_switch/btn"
+o.template = m:template_path("/socks_auto_switch/btn")
 o:depends("backup_node_add_mode", "manual")
 
 return api.return_map(m)
