@@ -1,43 +1,45 @@
-[21:28:29] ============================================================
-[21:28:29] Auto-sync 启动
-[21:28:29] ━━━ 加载同步源配置 ━━━
-[21:28:29]   📄 已加载: luci-app-aurora-config.yml (Aurora 主题配置应用)
-[21:28:29]   📄 已加载: luci-app-cloud-clipboard.yml (cloud-clipboard-go: LuCI app + service files + binary)
-[21:28:29]   📄 已加载: luci-app-passwall.yml (PassWall 代理管理界面)
-[21:28:29]   📄 已加载: luci-theme-aurora.yml (Aurora 主题 (Vite + Tailwind CSS))
-[21:28:29] 源仓库数: 4
-[21:28:29] 本地 tracked 文件: 280 个
-[21:28:29] ━━━ 同步: eamonxg/luci-app-aurora-config [luci-app-aurora-config.yml]/(root) → luci-app-aurora-config/ ━━━
-[21:28:29]   描述: Aurora 主题配置应用
-[21:28:30]   eamonxg/luci-app-aurora-config 默认分支: master
-[21:28:30]   (root): 93 个文件 (排除 7 项)
-[21:28:30]   小计: +0 ~0 -0 错误:0
-[21:28:30] ━━━ 同步: Jonnyan404/cloud-clipboard-go [luci-app-cloud-clipboard.yml]/openwrt/luci-app-cloud-clipboard → luci-app-cloud-clipboard/ ━━━
-[21:28:30]   描述: cloud-clipboard-go: LuCI app + service files + binary
-[21:28:30]   Jonnyan404/cloud-clipboard-go 默认分支: main
-[21:28:30]   openwrt/luci-app-cloud-clipboard: 12 个文件
-[21:28:31]   ✅ hook 执行成功 (.tools/sync.d/luci-app-cloud-clipboard.hook.sh)
-[21:28:31]   小计: +0 ~0 -0 错误:0
-[21:28:31] ━━━ 同步: Openwrt-Passwall/openwrt-passwall [luci-app-passwall.yml]/luci-app-passwall → luci-app-passwall/ ━━━
-[21:28:31]   描述: PassWall 代理管理界面
-[21:28:32]   Openwrt-Passwall/openwrt-passwall 默认分支: main
-[21:28:32]   luci-app-passwall: 128 个文件
-[21:28:32]   ~ 更新: luci-app-passwall/luasrc/model/cbi/passwall/client/acl_config.lua
-[21:28:32]   ~ 更新: luci-app-passwall/luasrc/model/cbi/passwall/client/global.lua
-[21:28:33]   ~ 更新: luci-app-passwall/luasrc/passwall/api.lua
-[21:28:33]   ~ 更新: luci-app-passwall/luasrc/view/passwall/node_config/link_share_man.htm
-[21:28:33]   ~ 更新: luci-app-passwall/root/usr/share/passwall/app.sh
-[21:28:33]   ~ 更新: luci-app-passwall/root/usr/share/passwall/iptables.sh
-[21:28:34]   ~ 更新: luci-app-passwall/root/usr/share/passwall/nftables.sh
-[21:28:34]   小计: +0 ~7 -0 错误:0
-[21:28:34] ━━━ 同步: eamonxg/luci-theme-aurora [luci-theme-aurora.yml]/(root) → luci-theme-aurora/ ━━━
-[21:28:34]   描述: Aurora 主题 (Vite + Tailwind CSS)
-[21:28:34]   eamonxg/luci-theme-aurora 默认分支: master
-[21:28:34]   (root): 32 个文件 (排除 8 项)
-[21:28:34]   小计: +0 ~0 -0 错误:0
-[21:28:34] 
-[21:28:34] ━━━ 汇总 ━━━
-[21:28:34]   新增: 0
-[21:28:34]   更新: 7
-[21:28:34]   删除: 0
-[21:28:34]   错误: 0
+[21:35:24] ============================================================
+[21:35:24] Auto-sync 启动
+[21:35:24] ━━━ 加载同步源配置 ━━━
+[21:35:24]   📄 已加载: luci-app-aurora-config.yml (Aurora 主题配置应用)
+[21:35:24]   📄 已加载: luci-app-cloud-clipboard.yml (cloud-clipboard-go: LuCI app + service files + binary)
+[21:35:24]   📄 已加载: luci-app-passwall.yml (PassWall 代理管理界面)
+[21:35:24]   📄 已加载: luci-theme-aurora.yml (Aurora 主题 (Vite + Tailwind CSS))
+[21:35:24] 源仓库数: 4
+[21:35:24] 本地 tracked 文件: 280 个
+[21:35:24] ━━━ 同步: eamonxg/luci-app-aurora-config [luci-app-aurora-config.yml]/(root) → luci-app-aurora-config/ ━━━
+[21:35:24]   描述: Aurora 主题配置应用
+[21:35:25]   eamonxg/luci-app-aurora-config 默认分支: master
+[21:35:25]   (root): 93 个文件 (排除 7 项)
+[21:35:25]   小计: +0 ~0 -0 错误:0
+[21:35:25] ━━━ 同步: Jonnyan404/cloud-clipboard-go [luci-app-cloud-clipboard.yml]/openwrt/luci-app-cloud-clipboard → luci-app-cloud-clipboard/ ━━━
+[21:35:25]   描述: cloud-clipboard-go: LuCI app + service files + binary
+[21:35:25]   Jonnyan404/cloud-clipboard-go 默认分支: main
+[21:35:26]   openwrt/luci-app-cloud-clipboard: 12 个文件
+[21:35:27]   ✅ hook 执行成功 (.tools/sync.d/luci-app-cloud-clipboard.hook.sh)
+[21:35:27]   小计: +0 ~0 -0 错误:0
+[21:35:27] ━━━ 同步: Openwrt-Passwall/openwrt-passwall [luci-app-passwall.yml]/luci-app-passwall → luci-app-passwall/ ━━━
+[21:35:27]   描述: PassWall 代理管理界面
+[21:35:27]   Openwrt-Passwall/openwrt-passwall 默认分支: main
+[21:35:27]   luci-app-passwall: 128 个文件
+[21:35:28]   ~ 更新: luci-app-passwall/luasrc/view/passwall/cbi/nodes_dynamiclist.htm
+[21:35:28]   ~ 更新: luci-app-passwall/luasrc/view/passwall/cbi/nodes_listvalue.htm
+[21:35:28]   ~ 更新: luci-app-passwall/luasrc/view/passwall/cbi/nodes_multivalue.htm
+[21:35:28]   ~ 更新: luci-app-passwall/luasrc/view/passwall/cbi/nodes_value.htm
+[21:35:29]   ~ 更新: luci-app-passwall/root/usr/share/passwall/app.sh
+[21:35:29]   ~ 更新: luci-app-passwall/root/usr/share/passwall/iptables.sh
+[21:35:29]   ~ 更新: luci-app-passwall/root/usr/share/passwall/nftables.sh
+[21:35:30]   ~ 更新: luci-app-passwall/root/usr/share/passwall/tasks.sh
+[21:35:30]   ~ 更新: luci-app-passwall/root/usr/share/passwall/utils.sh
+[21:35:30]   小计: +0 ~9 -0 错误:0
+[21:35:30] ━━━ 同步: eamonxg/luci-theme-aurora [luci-theme-aurora.yml]/(root) → luci-theme-aurora/ ━━━
+[21:35:30]   描述: Aurora 主题 (Vite + Tailwind CSS)
+[21:35:30]   eamonxg/luci-theme-aurora 默认分支: master
+[21:35:31]   (root): 32 个文件 (排除 8 项)
+[21:35:31]   小计: +0 ~0 -0 错误:0
+[21:35:31] 
+[21:35:31] ━━━ 汇总 ━━━
+[21:35:31]   新增: 0
+[21:35:31]   更新: 9
+[21:35:31]   删除: 0
+[21:35:31]   错误: 0
