@@ -1,39 +1,38 @@
-[02:22:16] ============================================================
-[02:22:16] Auto-sync 启动
-[02:22:16] ━━━ 加载同步源配置 ━━━
-[02:22:16]   📄 已加载: luci-app-aurora-config.yml (Aurora 主题配置应用)
-[02:22:16]   📄 已加载: luci-app-cloud-clipboard.yml (cloud-clipboard-go: LuCI app + service files + binary)
-[02:22:16]   📄 已加载: luci-app-passwall.yml (PassWall 代理管理界面)
-[02:22:16]   📄 已加载: luci-theme-aurora.yml (Aurora 主题 (Vite + Tailwind CSS))
-[02:22:16] 源仓库数: 4
-[02:22:16] 本地 tracked 文件: 289 个
-[02:22:16] ━━━ 同步: eamonxg/luci-app-aurora-config [luci-app-aurora-config.yml]/(root) → luci-app-aurora-config/ ━━━
-[02:22:16]   描述: Aurora 主题配置应用
-[02:22:16]   eamonxg/luci-app-aurora-config 默认分支: master
-[02:22:16]   (root): 102 个文件 (排除 7 项)
-[02:22:16]   小计: +0 ~0 -0 错误:0
-[02:22:16] ━━━ 同步: Jonnyan404/cloud-clipboard-go [luci-app-cloud-clipboard.yml]/openwrt/luci-app-cloud-clipboard → luci-app-cloud-clipboard/ ━━━
-[02:22:16]   描述: cloud-clipboard-go: LuCI app + service files + binary
-[02:22:16]   Jonnyan404/cloud-clipboard-go 默认分支: main
-[02:22:17]   openwrt/luci-app-cloud-clipboard: 11 个文件
-[02:22:17]   ✅ hook 执行成功 (.tools/sync.d/luci-app-cloud-clipboard.hook.sh)
-[02:22:17]   小计: +0 ~0 -0 错误:0
-[02:22:17] ━━━ 同步: Openwrt-Passwall/openwrt-passwall [luci-app-passwall.yml]/luci-app-passwall → luci-app-passwall/ ━━━
-[02:22:17]   描述: PassWall 代理管理界面
-[02:22:18]   Openwrt-Passwall/openwrt-passwall 默认分支: main
-[02:22:18]   luci-app-passwall: 129 个文件
-[02:22:18]   ~ 更新: luci-app-passwall/luasrc/passwall/util_sing-box.lua
-[02:22:18]   ~ 更新: luci-app-passwall/luasrc/passwall/util_xray.lua
-[02:22:18]   ~ 更新: luci-app-passwall/root/usr/share/passwall/subscribe.lua
-[02:22:18]   小计: +0 ~3 -0 错误:0
-[02:22:18] ━━━ 同步: eamonxg/luci-theme-aurora [luci-theme-aurora.yml]/(root) → luci-theme-aurora/ ━━━
-[02:22:18]   描述: Aurora 主题 (Vite + Tailwind CSS)
-[02:22:19]   eamonxg/luci-theme-aurora 默认分支: master
-[02:22:19]   (root): 32 个文件 (排除 8 项)
-[02:22:19]   小计: +0 ~0 -0 错误:0
-[02:22:19] 
-[02:22:19] ━━━ 汇总 ━━━
-[02:22:19]   新增: 0
-[02:22:19]   更新: 3
-[02:22:19]   删除: 0
-[02:22:19]   错误: 0
+[01:31:32] ============================================================
+[01:31:32] Auto-sync 启动
+[01:31:32] ━━━ 加载同步源配置 ━━━
+[01:31:32]   📄 已加载: luci-app-aurora-config.yml (Aurora 主题配置应用)
+[01:31:32]   📄 已加载: luci-app-cloud-clipboard.yml (cloud-clipboard-go: LuCI app + service files + binary)
+[01:31:32]   📄 已加载: luci-app-passwall.yml (PassWall 代理管理界面)
+[01:31:32]   📄 已加载: luci-theme-aurora.yml (Aurora 主题 (Vite + Tailwind CSS))
+[01:31:32] 源仓库数: 4
+[01:31:32] 本地 tracked 文件: 289 个
+[01:31:32] ━━━ 同步: eamonxg/luci-app-aurora-config [luci-app-aurora-config.yml]/(root) → luci-app-aurora-config/ ━━━
+[01:31:32]   描述: Aurora 主题配置应用
+[01:31:32]   eamonxg/luci-app-aurora-config 默认分支: master
+[01:31:33]   (root): 102 个文件 (排除 7 项)
+[01:31:33]   小计: +0 ~0 -0 错误:0
+[01:31:33] ━━━ 同步: Jonnyan404/cloud-clipboard-go [luci-app-cloud-clipboard.yml]/openwrt/luci-app-cloud-clipboard → luci-app-cloud-clipboard/ ━━━
+[01:31:33]   描述: cloud-clipboard-go: LuCI app + service files + binary
+[01:31:33]   Jonnyan404/cloud-clipboard-go 默认分支: main
+[01:31:33]   openwrt/luci-app-cloud-clipboard: 11 个文件
+[01:31:34]   ✅ hook 执行成功 (.tools/sync.d/luci-app-cloud-clipboard.hook.sh)
+[01:31:34]   小计: +0 ~0 -0 错误:0
+[01:31:34] ━━━ 同步: Openwrt-Passwall/openwrt-passwall [luci-app-passwall.yml]/luci-app-passwall → luci-app-passwall/ ━━━
+[01:31:34]   描述: PassWall 代理管理界面
+[01:31:35]   Openwrt-Passwall/openwrt-passwall 默认分支: main
+[01:31:35]   luci-app-passwall: 129 个文件
+[01:31:36]   ~ 更新: luci-app-passwall/root/usr/share/passwall/iptables.sh
+[01:31:36]   ~ 更新: luci-app-passwall/root/usr/share/passwall/nftables.sh
+[01:31:36]   小计: +0 ~2 -0 错误:0
+[01:31:36] ━━━ 同步: eamonxg/luci-theme-aurora [luci-theme-aurora.yml]/(root) → luci-theme-aurora/ ━━━
+[01:31:36]   描述: Aurora 主题 (Vite + Tailwind CSS)
+[01:31:36]   eamonxg/luci-theme-aurora 默认分支: master
+[01:31:37]   (root): 32 个文件 (排除 8 项)
+[01:31:37]   小计: +0 ~0 -0 错误:0
+[01:31:37] 
+[01:31:37] ━━━ 汇总 ━━━
+[01:31:37]   新增: 0
+[01:31:37]   更新: 2
+[01:31:37]   删除: 0
+[01:31:37]   错误: 0
